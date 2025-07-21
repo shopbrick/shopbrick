@@ -7,11 +7,7 @@ Receive your orders directly via **Stripe** or **PayPal**, and manage everything
 
 ## 🚀 Features
 
-- 🛠️ Static site generation — deploy to GitHub Pages, Netlify, or any static host  
-<details>
-  <summary>Product Page Example</summary>
-  ![Product Page Example](/shopbrick/shopbrick/doc/img/product_page.webp "Product Page Example")
-</details>
+- 🛠️ Static site generation — deploy to GitHub Pages, Netlify, or any static host
 - 💳 Stripe & PayPal integration  
 - 📁 Product data stored in the file system
 - 🔣 YAML-based content
@@ -20,6 +16,13 @@ Receive your orders directly via **Stripe** or **PayPal**, and manage everything
 - 🛒 Shopping cart functionality built into the frontend  
 - 🧾 Built-in admin panel (local) for PayPal order management  
 - 📝 Blog support (text + inline images)
+
+<details>
+  <summary>Product Page Example</summary>
+  <p>
+    <img src="https://raw.githubusercontent.com/shopbrick/shopbrick/main/doc/img/product_page.webp" alt="Product Page Example" />
+  </p>
+</details>
 
 ---
 
@@ -279,7 +282,7 @@ npm run admin
 
 This fetches orders and product line items from PayPal API and shows them in a dashboard.
 
-![Local admin panel to see PayPal orders](/shopbrick/shopbrick/doc/img/admin_paypal_orders.webp "Local admin panel to see PayPal orders")
+![Local admin panel to see PayPal orders](https://raw.githubusercontent.com/shopbrick/shopbrick/main/doc/img/admin_paypal_orders.webp)
 
 ---
 
