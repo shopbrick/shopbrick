@@ -1,0 +1,57 @@
+<section class="p-6">
+  <h2 class="max-w-md mx-auto text-center text-4xl font-bold sm:text-5xl mb-6">
+    <span class="<%- site.pageTitleColor %>">Customer Reviews</span>
+  </h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <% product.reviews.forEach((review, i)=> { %>
+      <div class="<%= i % 2 === 0 ? 'md:col-start-1' : 'md:col-start-2' %> bg-white rounded-2xl shadow p-4">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-lg font-semibold dark:text-slate-900">
+            <%= review.title %>
+          </h3>
+          <span class="text-yellow-500 font-medium">
+            <%= '★' .repeat(review.score) + '☆' .repeat(5 - review.score) %>
+          </span>
+        </div>
+        <p class="text-sm text-gray-700 mb-2">By <%= review.author %>
+        </p>
+        <p class="text-gray-600 mb-3">
+          <%= review.body %>
+        </p>
+        <% if (review.images && review.images.length> 0) { %>
+          <div class="flex gap-2 flex-wrap">
+            <% review.images.forEach(img=> { %>
+              <button type="button" data-modal-target="imgModal" data-modal-toggle="imgModal"
+                data-img-src="<%= img || '/img/noimg.webp' %>" class="cursor-pointer">
+                <img src="<%= img || '/img/noimg.webp' %>" alt="Review image"
+                  class="rounded-lg w-24 h-24 object-cover hover:opacity-80 transition" />
+              </button>
+              <% }) %>
+          </div>
+          <% } %>
+      </div>
+      <% }) %>
+  </div>
+
+  <!-- Flowbite Modal -->
+  <div id="imgModal" tabindex="-1" aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+    <div class="relative w-full max-w-2xl h-full md:h-auto">
+      <div class="relative bg-white rounded-lg shadow">
+        <button type="button"
+          class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center cursor-pointer"
+          data-modal-hide="imgModal">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd" />
+          </svg>
+        </button>
+        <div class="p-4">
+          <img id="modalFullImage" src="/img/noimg.webp" alt="Full size" class="w-full h-auto rounded-lg" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

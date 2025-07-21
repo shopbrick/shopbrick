@@ -1,0 +1,27 @@
+<%- include('templates/header') %>
+<section id="blogs" class="my-12 p-6">
+  <h1 class="text-center text-5xl font-bold <%- site.pageTitleColor %> mb-8">Blogs</h1>
+  <div class="flex flex-col gap-8">
+    <% blogs.forEach((blog) => { %>
+      <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow w-full max-w-3xl mx-auto">
+        <a href="/blogs/<%= blog.handle %>.html" class="block overflow-hidden">
+          <% if (blog.images.length > 0) { %>
+            <img src="<%= blog.images[0] %>" alt="<%- blog.title %>" class="w-full h-64 object-cover transform hover:scale-105 transition-transform duration-300">
+          <% } %>
+        </a>
+        <div class="p-6">
+          <h2 class="text-2xl font-semibold text-center text-slate-900 dark:text-white">
+            <a href="/blogs/<%= blog.handle %>.html"><%- blog.title.length > 47 ? blog.title.substring(0, 47) + '...' : blog.title %></a>
+          </h2>
+          <% if (blog.date) { %>
+            <p class="text-gray-500 dark:text-gray-400 text-center italic text-sm mt-1"><%- blog.date %></p>
+          <% } %>
+          <p class="mt-4 text-gray-700 dark:text-gray-300 text-center">
+            <%- blog.intro.length > 162 ? blog.intro.substring(0, 162) + '...' : blog.intro %>
+          </p>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+</section>
+<%- include('templates/footer') %>

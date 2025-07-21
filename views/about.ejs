@@ -1,0 +1,13 @@
+<%- include('templates/header') %>
+<section id="about" class="widescreen:section-min-height tallscreen:section-min-height my-12 flex scroll-mt-16 flex-col items-start justify-center gap-8 p-6 sm:flex-row">
+  <img class="sm:w-1/3 md:w-1/2 rounded-2xl" src="/img/<%- site.aboutImg %>" alt="About <%- site.company %>" />
+  <article class="sm:w-2/3 md:w-1/2">
+    <h2 class="max-w-md text-center text-4xl font-bold text-slate-900 sm:text-left sm:text-5xl dark:text-white">
+      <span class="<%- site.pageTitleColor %>">About <%- site.company %></span>
+    </h2>
+    <% site.aboutLines.forEach((row) => { %>
+      <p class="mt-4 max-w-md text-center text-2xl text-slate-700 sm:text-left dark:text-slate-400"><%- row %></p>
+    <% }) %>
+  </article>
+</section>
+<%- include('templates/footer') %>

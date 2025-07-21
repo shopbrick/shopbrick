@@ -1,0 +1,21 @@
+<%- include('templates/header') %>
+<%- include('templates/home/hero') %>
+<%- include('templates/home/testimonials') %>
+<% featuredProducts.forEach((product) => { %>
+  <%- include('templates/products/featuring_product', {product}) %>
+<% }) %>
+<hr class="mx-auto w-1/2 bg-black dark:bg-white" />
+
+<section id="products" class="widescreen:section-min-height tallscreen:section-min-height my-12 scroll-mt-20 p-6">
+  <h2 class="mb-6 text-center text-4xl font-bold sm:text-5xl <%- site.pageTitleColor %>">Shop</h2>
+  <div class="p-4 mx-auto lg:max-w-7xl sm:max-w-full">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-xl:gap-4 gap-6">
+    <% products.forEach((product) => { %>
+      <%- include('templates/products/product_min', {product}) %>
+    <% }) %>
+    </div>
+  </div>
+</section>
+<%- include('templates/home/about_us') %>
+<%- include('templates/home/contact_us') %>
+<%- include('templates/footer') %>

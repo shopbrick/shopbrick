@@ -1,0 +1,19 @@
+<div class="mb-4">
+  <span class="font-bold text-gray-700 dark:text-gray-300">Select Size:</span>
+  <div class="flex items-center mt-2">
+    <button id="productSize-<%- product.pk %>-<%- product.sizes[0] %>"
+      onclick="selectSize(this, '<%- product.pk %>')"
+      data-value="<%- product.sizes[0] %>"
+      class="productSize-<%- product.pk %> active bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 dark:hover:bg-gray-600 cursor-pointer">
+      <%- product.sizes[0] %>
+    </button>
+  <% product.sizes.slice(1).forEach((size) => { %>
+    <button id="productSize-<%- product.pk %>-<%- size %>"
+      onclick="selectSize(this, '<%- product.pk %>')"
+      data-value="<%- size %>"
+      class="productSize-<%- product.pk %> bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 dark:hover:bg-gray-600 cursor-pointer">
+      <%- size %>
+    </button>
+  <% }) %>
+  </div>
+</div>

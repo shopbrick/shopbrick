@@ -1,0 +1,27 @@
+<script>
+  function onThemeToggle(el) {
+    const isDark = el.checked;
+    setTheme(isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }
+
+  function setTheme(isDark) {
+    document.documentElement.classList.toggle('dark', isDark);
+
+    const toggles = document.querySelectorAll('.themeToggle');
+    toggles.forEach(toggle => toggle.checked = isDark);
+
+    document.querySelectorAll('.themeIcon').forEach(icon => {
+      icon.textContent = isDark ? '🌙' : '🌞';
+    });
+
+    document.querySelectorAll('.themeKnob').forEach(knob => {
+      knob.classList.toggle('left-0.5', !isDark);
+      knob.classList.toggle('right-0.5', isDark);
+    });
+  }
+
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  setTheme(savedTheme ? savedTheme === 'dark' : prefersDark);
+</script>

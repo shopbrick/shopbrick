@@ -1,0 +1,19 @@
+<% if (product.disabled) { %>
+  <div class="w-full -mx-2 mb-1 px-2 pt-4">
+    <button 
+      class="w-full bg-gray-300 text-gray-500 py-3 px-4 rounded-full font-bold cursor-not-allowed">Add to Cart</button>
+  </div>
+  <div class="w-full -mx-2 mb-4 px-2 pt-4">
+    <button 
+      class="w-full bg-gray-300 text-gray-500 dark:text-white py-3 px-4 rounded-full font-bold cursor-not-allowed">Buy it Now</button>
+  </div>
+<% } else { %>
+  <div class="w-full -mx-2 mb-1 px-2 pt-4">
+    <button onclick="addProductToCart('<%- product.pk %>')"
+      class="w-full <%- site.mainBtnColor %> text-white py-3 px-4 rounded-full font-bold cursor-pointer">Add to Cart</button>
+  </div>
+  <div class="w-full -mx-2 mb-4 px-2 pt-4">
+    <button onclick="buyProductNow('<%- product.pk %>')"
+      class="w-full <%- site.secondBtnColor %> text-gray-50 dark:text-white py-3 px-4 rounded-full font-bold cursor-pointer">Buy it Now</button>
+  </div>
+<% } %>

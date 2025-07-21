@@ -1,0 +1,33 @@
+company: MyShop
+emoji: 🤸‍♀️
+domain: myshop.com
+email: myshop@gmail.com
+mainBgColor: bg-indigo-800
+headerTitleClass: text-3xl font-medium text-lime-300
+pageTitleColor: text-indigo-700 dark:text-indigo-300
+mainBtnColor: bg-lime-500 hover:bg-lime-600 active:bg-lime-400
+secondBtnColor: bg-violet-600 hover:bg-violet-500 active:bg-violet-700
+linkColor: text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300
+heroImg: hero.webp
+aboutImg: about.webp
+sloganHTML: |-
+  <h2 class="max-w-md text-center text-4xl font-bold text-slate-900 sm:text-left sm:text-5xl dark:text-white">
+    Thoughtfully Curated Products.<br />
+    <span class="text-indigo-700 dark:text-indigo-300">Elevate Everyday Living</span>
+    with MyShop!
+  </h2>
+  <p class="mt-4 max-w-md text-center text-2xl text-slate-700 sm:text-left dark:text-slate-400">Find simple, beautiful, and useful items designed to make your daily life a little better.</p>
+about: |-
+  At MyShop, we believe in thoughtful simplicity. We carefully select every product to help you live more intentionally, whether it's something useful, inspiring, or just plain joyful.
+  Our team is driven by curiosity and craftsmanship — not by trends. Whether you're shopping for your home, a loved one, or yourself, we're here to offer lasting value over flashy hype. From handmade goods to smart everyday essentials, MyShop helps turn ordinary routines into something meaningful.
+testimonials:
+  - review: I love how easy it is to find unique, well-made products here. MyShop has become my go-to place for thoughtful gifts and cozy essentials.
+    author: Sarah L
+  - review: The experience felt so personal. The item arrived beautifully packaged and exceeded my expectations. Simple, elegant, and practical — exactly what I was looking for.
+    author: David M
+  - review: I appreciate that MyShop focuses on quality instead of clutter. You can tell everything is selected with intention. It makes online shopping feel special again.
+    author: Jessica R
+defaultCountry: US
+currencyUnit: USD
+locale: en-US
+supportedCurrencies: [USD, GBP]

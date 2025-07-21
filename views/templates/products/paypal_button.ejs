@@ -1,0 +1,54 @@
+<% if (!product.disabled) { %>
+<div class="relative z-10">
+  <div id="paypalButtonContainer" class="w-full -mx-2 mb-1 px-3 pt-4"></div>
+</div>
+
+<script>
+  const pk = '<%- product.pk %>';
+
+  paypal.Buttons({
+    createOrder: function (data, actions) {
+      const product = products[pk];
+      const productName = products[pk].title;
+      console.log('pk', pk);
+      const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
+      const size = document.querySelector(`.productSize-${pk}.active`)?.getAttribute('data-value');
+      const productVariantName = [productName, color, size].filter(Boolean).join(' / ');
+      console.log('productName', productName);
+      console.log('productVariantName', productVariantName);
+      const itemQty = getProductQty(pk);
+      const productPrice = getProductPrice(pk);
+      const totalPrice = (productPrice * itemQty).toFixed(2);
+
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: totalPrice,
+            currency_code: currency,
+            breakdown: {
+              item_total: {
+                value: totalPrice,
+                currency_code: currency
+              }
+            }
+          },
+          description: productVariantName,
+          items: [{
+            name: productVariantName,
+            unit_amount: {
+              value: productPrice,
+              currency_code: currency
+            },
+            quantity: itemQty
+          }]
+        }]
+      });
+    },
+    onApprove: function (data, actions) {
+      return actions.order.capture().then(function (details) {
+        window.location.assign(`${window.location.origin}/success.html?hsh=5HkxGr80yCFm&poid=${details.id}&t=${Date.now() + 90000000}`);
+      });
+    }
+  }).render('#paypalButtonContainer');
+</script>
+<% } %>

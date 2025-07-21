@@ -1,0 +1,6 @@
+mainBgColor: bg-lime-600
+headerTitleClass: text-xl font-bold text-indigo-500
+pageTitleColor: text-lime-500 dark:text-lime-400
+mainBtnColor: bg-lime-500 hover:bg-lime-600 active:bg-lime-400
+secondBtnColor: bg-red-600 hover:bg-red-500 active:bg-red-700
+linkColor: text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300

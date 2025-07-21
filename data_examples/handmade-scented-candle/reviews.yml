@@ -1,0 +1,17 @@
+- title: "Absolutely Lovely!"
+  score: 5
+  author: "Jenna Morris"
+  body: "This candle smells divine and looks amazing on my coffee table. I already bought two more for gifts!"
+  images: ["/img/noimg.webp"]
+
+- title: "Relaxing and Elegant"
+  score: 4
+  author: "Kevin Zhao"
+  body: "The scent is very calming and natural. One star off because I wish it came in larger sizes."
+  images: []
+
+- title: "Perfect Evening Companion"
+  score: 5
+  author: "Anna R."
+  body: "Burns evenly and slowly. Fills the room but not too strong. I love the minimal jar design too."
+  images: ["/img/noimg.webp", "/img/noimg.webp"]

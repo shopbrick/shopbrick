@@ -1,0 +1,16 @@
+<hr class="mx-auto w-1/2 bg-black dark:bg-white" />
+
+<section id="testimonials" class="widescreen:section-min-height tallscreen:section-min-height my-12 scroll-mt-20 p-6">
+  <h2 class="mb-6 text-center text-4xl font-bold text-slate-900 sm:text-5xl dark:text-white">What our customers say:</h2>
+  <% site.testimonials.forEach(({ review, author }) => { %>
+  <figure class="my-12">
+    <blockquote class="relative rounded-3xl bg-teal-600 py-12 pl-14 pr-8 dark:bg-black">
+      <p
+        class="before:trasform after:trasform mt-2 text-left text-2xl text-white before:absolute before:left-0 before:top-0 before:translate-x-2 before:translate-y-2 before:font-serif before:text-9xl before:text-white before:opacity-25 before:content-['\201C'] after:absolute after:-bottom-20 after:right-0 after:-translate-x-2 after:-translate-y-2 after:font-serif after:text-9xl after:text-white after:opacity-25 after:content-['\201D'] sm:text-3xl dark:text-slate-400">
+        <%- review %>
+      </p>
+    </blockquote>
+    <figcaption class="mt-2 text-right text-xl italic text-slate-500 sm:text-2xl dark:text-slate-400">&#8212;<%- author %></figcaption>
+  </figure>
+  <% }) %>
+</section>

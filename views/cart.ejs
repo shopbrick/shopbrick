@@ -1,0 +1,28 @@
+<%- include('templates/header') %>
+
+<section class="container mx-auto p-6 max-w-7xl">
+  <h1 class="mb-6 text-center text-4xl font-bold text-slate-900 sm:text-left sm:text-5xl dark:text-white">
+    <span class="<%- site.pageTitleColor %>">Shopping Cart</span>
+  </h1>
+
+  <div id="errorsSection"></div>
+
+  <p id="emptyCart" class="text-center text-gray-500 dark:text-gray-400 py-12 text-2xl sm:py-15 sm:text-3xl">Your cart is empty.</p>
+
+  <div id="cartForm" class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 w-full hidden">
+    <!-- Grid Layout for Items -->
+    <div id="cartItems" class="flex flex-col gap-6"></div>
+
+    <!-- Total and Checkout -->
+    <div class="mt-8 flex justify-around items-center">
+      <p class="text-lg font-semibold text-slate-900 dark:text-white">
+        Total: <span id="cartTotal"></span>
+      </p>
+      <button onclick="checkout()" class="bg-lime-500 text-white py-3 px-6 rounded-full font-bold hover:bg-lime-600 active:bg-lime-400 cursor-pointer">
+        Checkout
+      </button>
+    </div>
+  </div>
+</section>
+
+<%- include('templates/footer') %>

@@ -1,0 +1,17 @@
+- title: "Looks Awesome!"
+  score: 5
+  author: "Diego S."
+  body: "Exactly what I wanted. The embroidery came out great and the cap fits well."
+  images: ["/img/noimg.webp"]
+
+- title: "Pretty Good for the Price"
+  score: 4
+  author: "Larisa N."
+  body: "Nice quality cap, though delivery took a bit longer than expected. Still worth it!"
+  images: []
+
+- title: "Will Order Again!"
+  score: 5
+  author: "Tom W."
+  body: "Used these for our startup’s launch event — people loved them. Clean stitching and cool colors."
+  images: ["/img/noimg.webp"]

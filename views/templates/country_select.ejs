@@ -1,0 +1,5 @@
+<select class="countrySelect max-w-45" onchange="selectCountry(this.value)">
+  <% countries.forEach(({country, code}) => { %>
+  <option value="<%- code %>"<%- code === site.defaultCountry ? ' selected' : '' %>><%- country %></option>
+  <% }) %>
+</select>

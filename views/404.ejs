@@ -1,0 +1,35 @@
+<%- include('templates/header') %>
+<section class="widescreen:section-min-height tallscreen:section-min-height my-12 scroll-mt-20 p-6">
+  <h1 class="text-center text-4xl font-bold text-slate-900 sm:text-5xl dark:text-white">
+    <span class="text-indigo-700 dark:text-indigo-300">🚫 404 – Page Not Found</span>
+  </h1>
+  <p class="mt-4 text-center text-2xl text-slate-700 dark:text-slate-400">
+    Oops! The page you're looking for doesn't exist.
+  </p>
+  <p class="mt-4 text-center text-2xl text-slate-700 dark:text-slate-400">
+    It may have been moved, deleted, or the URL might be incorrect. But don’t worry — there’s plenty more to explore!
+  </p>
+
+  <h2 class="mt-10 mb-6 text-center text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+    Here's what you can do:
+  </h2>
+
+  <ul class="text-center text-lg text-slate-700 dark:text-slate-400 space-y-2">
+    <li>Double-check the web address and try again.</li>
+    <li>Head back to our <a href="/" class="text-indigo-600 dark:text-indigo-400 underline">homepage</a>.</li>
+    <li>Or discover some of our most popular products below 👇</li>
+  </ul>
+
+  <h2 class="mt-16 mb-6 text-center text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+    You might like:
+  </h2>
+
+  <div id="products" class="p-4 mx-auto lg:max-w-7xl sm:max-w-full">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-xl:gap-4">
+      <% products.forEach((product) => { %>
+        <%- include('templates/products/product_min2', {product}) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<%- include('templates/footer') %>

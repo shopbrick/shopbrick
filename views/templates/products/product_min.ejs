@@ -1,0 +1,30 @@
+<div class="bg-white rounded-2xl cursor-pointer hover:-translate-y-2 transition-all relative">
+  <a href="/products/<%= product.pk %>.html">
+    <% if (product.sale) { %>
+      <%- include('sale_badge') %>
+    <% } %>
+    <div class="w-11/12 h-[210px] overflow-hidden mx-auto aspect-w-16 aspect-h-8 mb-1">
+      <img src="<%= product.images[0] %>" alt="<%= product.title.replace(/"/g, '') %>"
+        class="h-full w-full object-contain" />
+    </div>
+    <div class="px-2 pb-2 mx-auto">
+      <h3 class="font-bold text-gray-800"><%= product.title %></h3>
+      <h4 class="text-gray-800 mt-4 mb-4">
+        <% if (product.isSizeBasedPrice) { %>
+          From
+        <% } %>
+        <% if (product.sale) { %>
+          <span class="text-gray-300 line-through productOldPrice" data-pk="<%- product.pk %>">
+            <%= formatCurrency(getProductOldPrice(product)) %>
+          </span>
+        <% } %>
+        <span class="productPrice" data-pk="<%- product.pk %>">
+          <%= formatCurrency(getProductPrice(product)) %>
+        </span>
+      </h4>
+    </div>
+  </a>
+</div>
+<% if (!product.featuring_product) { %>
+<script>products['<%- product.pk %>'] = <%- JSON.stringify({price: product.price, isSizeBasedPrice: product.isSizeBasedPrice, size: product.size}) %>;</script>
+<% } %>

@@ -1,0 +1,39 @@
+{
+  "name": "shop_builder3",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -e js,ejs,yml server.js",
+    "admin": "nodemon -e js,ejs,yml src/admin/paypal.js",
+    "init": "node scripts/init.js",
+    "build": "node scripts/generate_static.js",
+    "rates": "node scripts/fetch_exchrates.js",
+    "prices": "node scripts/update_prices.js",
+    "stripe": "node scripts/upload_stripe_prices.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.3.0",
+    "html-minifier-terser": "^7.2.0",
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.9",
+    "slugify": "^1.6.6",
+    "stripe": "^18.0.0",
+    "uglify-js": "^3.19.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.8",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.0.8"
+  }
+}

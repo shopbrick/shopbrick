@@ -1,0 +1,16 @@
+<hr class="mx-auto w-1/2 bg-black dark:bg-white" />
+
+<section id="about" class="widescreen:section-min-height tallscreen:section-min-height my-12 flex scroll-mt-16 flex-col-reverse items-center justify-center gap-8 p-6 sm:flex-row">
+  <article class="sm:w-1/2">
+    <h2 class="max-w-md text-center text-4xl font-bold text-slate-900 sm:text-left sm:text-5xl dark:text-white">
+      <span class="<%- site.pageTitleColor %>">About Us</span>
+    </h2>
+    <p class="mt-4 max-w-md text-center text-2xl text-slate-700 sm:text-left dark:text-slate-400">
+      <%- site.aboutLines[0] %>
+    </p>
+    <p class="mt-4 max-w-md text-center text-2xl text-slate-700 sm:text-left dark:text-slate-400">
+      <a href="about.html" class="inline-block rounded bg-lime-500 px-4 py-2 font-bold text-white hover:bg-lime-600 active:bg-lime-400">Read more</a>
+    </p>
+  </article>
+  <img class="w-1/2 rounded-2xl" src="/img/<%- site.aboutImg %>" alt="About <%- site.company %>" />
+</section>

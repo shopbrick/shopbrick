@@ -1,0 +1,40 @@
+    </main>
+    <footer id="footer" class="<%- site.mainBgColor %> text-xl text-white">
+      <section class="mx-auto flex max-w-4xl flex-col p-4 sm:flex-row sm:justify-between">
+        <address>
+          <h2><%- site.company %>&trade;</h2>
+          Monday–Friday<br />
+          9am–5pm EST<br />
+          Email:
+          <a href="mailto:<%= site.email %>"><%= site.email %></a>
+        </address>
+        <nav class="hidden flex-col gap-2 md:flex" aria-label="footer">
+          <a href="/#products" class="hover:opacity-90">Shop</a>
+          <a href="/#testimonials" class="hover:opacity-90">Reviews</a>
+          <a href="/blogs.html" class="hover:opacity-90">Blogs</a>
+          <a href="/#contact" class="hover:opacity-90">Contact Us</a>
+        </nav>
+        <nav class="hidden flex-col gap-2 md:flex" aria-label="footer">
+          <a href="/policies/privacy-policy.html" class="hover:opacity-90">Privacy Policy</a>
+          <a href="/policies/refund-policy.html" class="hover:opacity-90">Refund Policy</a>
+          <a href="/policies/shipping-policy.html" class="hover:opacity-90">Shipping Policy</a>
+          <a href="/policies/terms-of-service.html" class="hover:opacity-90">Terms of Service</a>
+        </nav>
+        <div class="flex flex-col sm:gap-2">
+          <p class="text-right">Copyright &copy; <span id="year">2022</span></p>
+          <p class="text-right">All Rights Reserved</p>
+          <script>
+            const year = document.getElementById('year');
+            const thisYear = new Date().getFullYear();
+            year.setAttribute('datetime', thisYear);
+            year.textContent = thisYear;
+          </script>
+          <%- include('country_select') %>
+          <%- include('currency_select') %>
+          <%- include('light_dark_mode_theme_toggle_button') %>
+          <%- include('light_dark_mode_theme_toggle_script') %>
+        </div>
+      </section>
+    </footer>
+  </body>
+</html>

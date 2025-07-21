@@ -1,0 +1,66 @@
+<%- include('templates/header') %>
+<div id="orderSuccess" class="hidden bg-gray-50 dark:bg-black p-18">
+  <div class="flex items-center justify-center">
+    <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+      <div class="text-green-500 mb-4">
+        <svg class="mx-auto h-16 w-16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+        </svg>
+      </div>
+      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">Thank you for your order!</h1>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">
+        Your payment was successful. We’re processing your order and will send you a confirmation email shortly.
+      </p>
+      <p id="orderID" class="text-2xl font-semibold text-gray-600 dark:text-gray-300 mb-4"></p>
+      <a href="/" class="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">Return to
+        homepage</a>
+    </div>
+  </div>
+</div>
+
+<div id="orderFallback" class="hidden items-center justify-center bg-gray-50 dark:bg-black p-18">
+  <div class="flex items-center justify-center">
+    <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+      <div class="text-yellow-500 mb-4">
+        <svg class="mx-auto h-16 w-16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v2m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+        </svg>
+      </div>
+      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">Page is outdated</h1>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">
+        We couldn't find a valid order reference. Please check your link or return to the homepage.
+      </p>
+      <a href="/" class="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">Go to homepage</a>
+    </div>
+  </div>
+</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const hash = params.get('hsh');
+  const ppOrderId = params.get('poid');
+  const time = params.get('t');
+
+  if (hash === '5HkxGr80yCFm' && Date.now() < time && time < 4102444800000) {
+    const successEl = document.getElementById('orderSuccess');
+    successEl.classList.remove('hidden');
+    successEl.classList.add('flex');
+
+    localStorage.setItem('cart', '{}');
+    const cartSizeEls = document.getElementsByClassName('cartSize');
+    for (const cartSizeEl of cartSizeEls) {
+      cartSizeEl.classList.remove('visible');
+      cartSizeEl.classList.add('invisible');
+    };
+
+    if (ppOrderId) {
+      const orderIdDiv = document.getElementById('orderID');
+      orderIdDiv.textContent = `PayPal Order ID: ${ppOrderId}`;
+    }
+  } else {
+    const fallbackEl = document.getElementById('orderFallback');
+    fallbackEl.classList.remove('hidden');
+    fallbackEl.classList.add('flex');
+  }
+</script>
+<%- include('templates/footer') %>

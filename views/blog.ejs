@@ -1,0 +1,75 @@
+<%- include('templates/header') %>
+<section id="blog" class="my-12 p-6 w-full">
+  <article class="w-full max-w-3xl mx-auto">
+    <% if (blog.images.length > 0) { %>
+      <img src="<%= blog.images[0] %>" alt="<%- blog.title %>" class="rounded-xl shadow-lg w-full mb-6">
+    <% } %>
+
+    <h2 class="text-4xl font-bold text-center text-slate-900 dark:text-white">
+      <span class="<%- site.pageTitleColor %>"><%- blog.title %></span>
+    </h2>
+
+    <% if (blog.date) { %>
+      <p class="text-gray-500 italic mt-2 text-center text-lg"><%- blog.date %></p>
+    <% } %>
+
+<!-- Share Links -->
+<div class="mt-4 text-center">
+  <span class="text-gray-500">Share:</span>
+
+  <!-- Facebook -->
+  <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(blog.url) %>"
+     target="_blank" rel="noopener noreferrer"
+     class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition mx-2">
+    <svg class="w-5 h-5 inline" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.77V15h-2v-3h2V9.5C10 7 11.57 5 14 5h2v3h-2c-.55 0-1 .45-1 1v2h3l-1 3h-2v6.77c4.56-.9 8-4.93 8-9.77z"/>
+    </svg>
+  </a>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(blog.url) %>&text=<%= encodeURIComponent(blog.title) %>"
+     target="_blank" rel="noopener noreferrer"
+     class="text-blue-500 hover:text-blue-700 transition mx-2">
+    <svg class="w-5 h-5 inline" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.29 4.29 0 0 0 1.88-2.36 8.59 8.59 0 0 1-2.73 1.04 4.26 4.26 0 0 0-7.27 3.89A12.1 12.1 0 0 1 2.92 4.7a4.26 4.26 0 0 0 1.32 5.7 4.23 4.23 0 0 1-1.93-.53v.05c0 2.02 1.44 3.71 3.36 4.1a4.3 4.3 0 0 1-1.92.07 4.26 4.26 0 0 0 3.98 2.97A8.55 8.55 0 0 1 2 18.27a12.1 12.1 0 0 0 6.29 1.84c7.55 0 11.68-6.26 11.68-11.68 0-.18 0-.37-.02-.55A8.23 8.23 0 0 0 22.46 6z"/>
+    </svg>
+  </a>
+
+  <!-- Pinterest -->
+  <a href="https://pinterest.com/pin/create/button/?url=<%= encodeURIComponent(blog.url) %>&media=<%= encodeURIComponent(blog.images[0]) %>&description=<%= encodeURIComponent(blog.title) %>"
+     target="_blank" rel="noopener noreferrer"
+     class="text-red-600 hover:text-red-800 transition mx-2">
+    <svg class="w-5 h-5 inline" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12c0 4.84 3.44 8.87 8 9.77v-7h-2v-3h2V9.5C10 7 11.57 5 14 5h2v3h-2c-.55 0-1 .45-1 1v2h3l-1 3h-2v7c4.56-.9 8-4.93 8-9.77C22 6.48 17.52 2 12 2z"/>
+    </svg>
+  </a>
+</div>
+
+    <% blog.contentLines.forEach((line) => { %>
+      <% if (line.length < 50) { %>
+        <h3 class="mt-4 text-xl font-semibold text-slate-800 dark:text-slate-300"><%- line %></h3>
+      <% } else { %>
+        <p class="mt-4 text-lg text-slate-700 dark:text-slate-400"><%- line %></p>
+      <% } %>
+    <% }) %>
+
+    <% if (blog.images.length > 1) { %>
+      <div class="mt-6 flex flex-wrap gap-4">
+        <% blog.images.slice(1).forEach((image) => { %>
+          <img src="<%= image %>" alt="<%- blog.title %>" class="rounded-lg w-full shadow-md">
+        <% }) %>
+      </div>
+    <% } %>
+
+    <div class="mt-8 text-center">
+      <a href="/blogs.html" class="<%- site.linkColor %> transition group inline-flex items-center">
+        <span>Back to Blog</span>
+        <svg class="w-5 h-5 ml-2 transition-transform transform group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+  </article>
+</section>
+<%- include('templates/footer') %>

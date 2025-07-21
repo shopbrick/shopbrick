@@ -1,0 +1,21 @@
+title: Custom Embroidered Baseball Cap
+branded: false
+star_rating: 4.6
+review_count: 21
+sale: true
+featuring_product: false
+colors:
+  - Black
+  - Navy
+  - Olive
+sizes:
+  - Small
+  - Medium
+  - Large
+price:
+  Small:
+    USD: 21.00
+  Medium:
+    USD: 23.50
+  Large:
+    USD: 25.00

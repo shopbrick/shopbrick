@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" class="sm:scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="dk" content="<%- site.encryptionKey %>" />
+    <meta name="sfkey" content="<%- site.stripeApiPublishableKey %>" />
+    <title><%= site.company %></title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script>const products = {}; const defaultCountry = '<%- site.defaultCountry %>'; const defaultCurrency = '<%- site.baseCurrency %>'; let locale = '<%- site.locale %>'; let currency = '<%- site.baseCurrency %>';</script>
+    <script src="/js/menu-button.js" defer></script>
+    <script src="/js/flowbite.min.js" defer></script>
+    <script src="https://js.stripe.com/v3"></script>
+    <script src="/js/cart.js" defer></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=<%- site.paypalClientID %>&currency=USD"></script>
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-slate-50 dark:bg-black dark:text-white">
+    <header class="sticky top-0 z-50 <%- site.mainBgColor %> text-white">
+      <section class="mx-auto flex max-w-4xl items-center justify-between p-4">
+        <h1 class="<%- site.headerTitleClass %>">
+          <a href="/#hero"><%= site.emoji %> <%- site.company %></a>
+        </h1>
+        <div>
+          <button id="weight-plates-button" class="relative h-8 w-8 cursor-pointer text-3xl md:hidden">
+            <div class="before:content[''] after:content[''] absolute top-4 -mt-0.5 h-1 w-8 rounded bg-white transition-all duration-500 before:absolute before:h-1 before:w-8 before:-translate-x-4 before:-translate-y-3 before:rounded before:bg-white before:transition-all before:duration-500 after:absolute after:h-1 after:w-8 after:-translate-x-4 after:translate-y-3 after:rounded after:bg-white after:transition-all after:duration-500"></div>
+          </button>
+          <nav class="hidden space-x-8 text-xl md:block" aria-label="main">
+            <a href="/#products" class="hover:opacity-90">Shop</a>
+            <!-- <a href="/#track" class="hover:opacity-90">Track Your Order</a> -->
+            <a href="/#about" class="hover:opacity-90">About</a>
+            <a href="/blogs.html" class="hover:opacity-90">Blogs</a>
+            <%- include('light_dark_mode_theme_toggle_button') %>
+            <%- include('country_select') %>
+            <%- include('currency_select') %>
+            <a href="/cart.html" class="relative hover:opacity-90">
+              &#128717;
+              <span class="cartSize absolute -bottom-2 -left-2 bg-white text-black text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-300 shadow-md invisible" />
+            </a>
+          </nav>
+        </div>
+      </section>
+      <section id="mobile-menu" class="top-17.5 justify-content-center absolute hidden w-full origin-top animate-open-menu flex-col bg-black text-5xl">
+        <button class="self-end px-6 text-8xl"></button>
+        <nav class="flex min-h-screen flex-col items-center py-8" aria-label="mobile">
+          <a href="/#products" class="w-full py-6 text-center hover:opacity-90">Shop</a>
+          <a href="/#best-seller" class="w-full py-6 text-center hover:opacity-90">Best Seller</a>
+          <a href="/#testimonials" class="w-full py-6 text-center hover:opacity-90">Reviews</a>
+          <!-- <a href="/#track" class="w-full py-6 text-center hover:opacity-90">Track Your Order</a> -->
+          <a href="/#about" class="w-full py-6 text-center hover:opacity-90">About Us</a>
+          <a href="/cart.html" class="relative hover:opacity-90">
+            &#128717;
+            <span class="cartSize absolute -bottom-2 -left-2 bg-white text-black text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-300 shadow-md invisible" />
+          </a>
+          <a href="/blogs.html" class="w-full py-6 text-center hover:opacity-90">Blogs</a>
+        </nav>
+      </section>
+    </header>
+    <main class="flex-1 mx-auto max-w-4xl">

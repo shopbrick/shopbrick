@@ -1,0 +1,25 @@
+@custom-variant dark (&:where(.dark, .dark *));
+@import "tailwindcss" source("../../");
+/* @import "tailwindcss/preflight"; */
+@tailwind utilities;
+
+@layer base {
+  /* Custom screen sizes */
+  @media (min-aspect-ratio: 3/2) {
+    /* Custom widescreen styles */
+    .widescreen\:section-min-height {
+      min-height: 91.4vh;
+    }
+  }
+
+  @media (max-aspect-ratio: 13/20) {
+    /* Custom tallscreen styles */
+    .tallscreen\:section-min-height {
+      min-height: 91.4vh;
+    }
+  }
+}
+
+.active {
+  @apply bg-gray-700 dark:bg-gray-500 text-white ring-2 ring-gray-900 dark:ring-gray-300 cursor-auto;
+}

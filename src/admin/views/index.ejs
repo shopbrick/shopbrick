@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF‑8">
+  <title>PayPal Orders</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <div class="max-w-6xl mx-auto py-8 px-4">
+    <h1 class="text-3xl font-bold mb-6">Recent PayPal Orders</h1>
+
+    <% if (!orders.length) { %>
+      <p>No recent orders.</p>
+      <p>Make sure to enable ✅ Transaction Search at https://developer.paypal.com/dashboard/applications</p>
+    <% } else { %>
+      <% orders.forEach(o => { %>
+        <div class="bg-white rounded-lg shadow p-5 mb-6 border">
+          <div class="text-sm text-gray-700 mb-2">
+            <strong>Capture:</strong> <code><%= o.captureId %></code> |
+            <strong>Order:</strong> <%= o.orderId %> |
+            <strong>Status:</strong> <%= o.status %> |
+            <strong>Amount:</strong> $<%= o.amount.value %> <%= o.amount.currency_code %> |
+            <strong>Time:</strong> <%= new Date(o.time).toLocaleString() %>
+          </div>
+          <div class="text-sm text-gray-700 mb-3">
+            <strong>Payer:</strong> <%= o.payer %>
+          </div>
+          <div class="mb-4 text-sm text-gray-700">
+            <strong>Shipping Address:</strong><br>
+            <%= o.shipping.address_line_1 || '' %>,
+            <%= o.shipping.admin_area_2 || '' %>,
+            <%= o.shipping.admin_area_1 || '' %>,
+            <%= o.shipping.postal_code || '' %>,
+            <%= o.shipping.country_code || '' %>
+          </div>
+          <table class="w-full text-sm border border-gray-300">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-3 py-1 border">Item</th>
+                <th class="px-3 py-1 border">Price</th>
+                <th class="px-3 py-1 border">Qty</th>
+                <th class="px-3 py-1 border">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (!o.items.length) { %>
+                <tr><td colspan="4" class="px-3 py-2 text-center text-gray-500">No items</td></tr>
+              <% } else { %>
+                <% o.items.forEach(i => { %>
+                  <tr>
+                    <td class="border px-3 py-1"><%= i.name %></td>
+                    <td class="border px-3 py-1 text-center">$<%= i.unit_amount.value %></td>
+                    <td class="border px-3 py-1 text-center"><%= i.quantity %></td>
+                    <td class="border px-3 py-1 text-center">$<%= (i.unit_amount.value * i.quantity).toFixed(2) %></td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+          <form action="/mark-shipped/<%= o.orderId %>" method="POST" class="mt-3">
+            <% if (o.shipped) { %>
+              <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded text-sm font-semibold">✅ Shipped</span>
+            <% } else { %>
+              <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">Mark as shipped</button>
+            <% } %>
+          </form>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+</html>
