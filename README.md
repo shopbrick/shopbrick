@@ -201,7 +201,7 @@ npm run stripe
 ```
 
 After testing, update with your live keys.  
-You can configure your checkout page colors in the Stripe dashboard.
+You can configure your checkout page colors in the Stripe dashboard. Check [the doc](https://github.com/shopbrick/shopbrick/blob/main/doc/STRIPE.md#-customize-checkout-colors-and-appearance).
 
 ---
 

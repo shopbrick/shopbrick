@@ -5,6 +5,8 @@ import yaml from 'js-yaml';
 const fsp = fs.promises;
 const dataExmplDir = path.join(process.cwd(), 'data_examples');
 const dataDir = path.join(process.cwd(), 'data');
+const configExamplePath = path.join(process.cwd(), 'config', 'config_example.yml');
+const configPath = path.join(process.cwd(), 'config', 'config.yml');
 const secretsPath = path.join(process.cwd(), 'config', 'secrets.yml');
 const blogImgDir = path.join(process.cwd(), 'public', 'img', 'blog');
 
@@ -21,6 +23,20 @@ async function copyDirectory(src, dest) {
     } else {
       await fsp.copyFile(srcPath, destPath);
     }
+  }
+}
+
+async function copyFile(src, dest) {
+  try {
+    if (!fs.existsSync(dest)) {
+      await fsp.copyFile(src, dest);
+      console.log(`Copied ${src} to ${dest}`);
+    } else {
+      console.log(`${dest} already exists. Skipping.`);
+    }
+  } catch (err) {
+    console.error(`Failed to copy ${src}:`, err);
+    throw err;
   }
 }
 
@@ -57,6 +73,7 @@ async function ensureBlogImageDir(dirPath) {
   try {
     await copyDirectory(dataExmplDir, dataDir);
     console.log('Copied data_examples to data.');
+    await copyFile(configExamplePath, configPath);
     await ensureSecretsFile(secretsPath);
     await ensureBlogImageDir(blogImgDir);
   } catch (err) {
