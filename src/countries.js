@@ -1,3 +1,5 @@
+import config from './config.js';
+
 const countries = [
   {"country": "Australia", "code": "AU", "locale": "en-AU", "currency": "AUD", "symbol": "$"},
   {"country": "Austria", "code": "AT", "locale": "de-AT", "currency": "EUR", "symbol": "€"},
@@ -42,4 +44,10 @@ const countries = [
   {"country": "United States", "code": "US", "locale": "en-US", "currency": "USD", "symbol": "$"}
 ];
 
-export default countries;
+const filterdCountries = countries.filter(val => checkCountry(val.code));
+
+function checkCountry(c) {
+  return config.supportedCountries.includes(c);
+}
+
+export default filterdCountries;
