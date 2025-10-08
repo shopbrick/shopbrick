@@ -31,3 +31,4 @@ defaultCountry: US
 currencyUnit: USD
 locale: en-US
 supportedCurrencies: [USD, GBP]
+supportedCountries: [UA, PL, GB, US]
