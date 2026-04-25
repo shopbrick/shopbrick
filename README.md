@@ -82,12 +82,12 @@ npx @tailwindcss/cli -i ./views/css/styles.css -o ./public/css/styles.css -m -w
 
 Green theme:
 ```sh
-CONFIG=green nrd
+CONFIG=green npm run dev
 ```
 
 Orange theme:
 ```sh
-CONFIG=orange nrd
+CONFIG=orange npm run dev
 ```
 </details>
 

@@ -4,6 +4,8 @@ import yaml from 'js-yaml';
 import {env} from 'node:process';
 
 const encryptionKey = 'v8aNKRf7NaTT';
+const envr = env.ENV === 'test' ? 'test' : 'production';
+console.log(`Running in '${envr}' environment.`);
 
 function getConfig() {
   console.log('Parsing config.yml ...');
@@ -14,7 +16,7 @@ function getConfig() {
       loadAndMergeYaml(config, name);
     });
   }
-  loadAndMergeYaml(config, 'secrets', {optional: true});
+  loadAndMergeYaml(config, envr, {optional: true});
   config.baseCurrency ||= config.currencyUnit;
   config.aboutLines = config.about.split(/\r?\n/);
   config.formatCurrency = (number) =>
@@ -26,8 +28,12 @@ function getConfig() {
 function loadAndMergeYaml(config, filename, options = {}) {
   const filePath = path.join(process.cwd(), 'config', `${filename}.yml`);
   if (!fs.existsSync(filePath)) {
-    if (options.optional) return;
-    throw new Error(`File ${filePath} doesn't exist.`);
+    if (options.optional) {
+      const relativePath = path.relative(process.cwd(), filePath);
+      console.warn(`Config file ${relativePath} not found. Skipping.`);
+      return;
+    }
+    throw new Error(`File ${relativePath} doesn't exist.`);
   }
   const loaded = yaml.load(fs.readFileSync(filePath, 'utf8'));
   Object.assign(config, loaded);

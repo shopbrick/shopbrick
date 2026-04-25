@@ -7,7 +7,8 @@ const dataExmplDir = path.join(process.cwd(), 'data_examples');
 const dataDir = path.join(process.cwd(), 'data');
 const configExamplePath = path.join(process.cwd(), 'config', 'config_example.yml');
 const configPath = path.join(process.cwd(), 'config', 'config.yml');
-const secretsPath = path.join(process.cwd(), 'config', 'secrets.yml');
+const secretsPath = path.join(process.cwd(), 'config', 'production.yml');
+const testSecretsPath = path.join(process.cwd(), 'config', 'test.yml');
 const blogImgDir = path.join(process.cwd(), 'public', 'img', 'blog');
 
 async function copyDirectory(src, dest) {
@@ -40,22 +41,22 @@ async function copyFile(src, dest) {
   }
 }
 
-async function ensureSecretsFile(filePath) {
+async function ensureSecretsFile(filePath, env = 'test') {
   if (!fs.existsSync(filePath)) {
     const secrets = {
       exchangerateApiKey: 'YOUR-EXCHANGE-RATE-API-KEY',
-      stripeApiSecretKey: 'sk_test_YOUR_SECRET_KEY',
-      stripeApiPublishableKey: 'pk_test_YOUR_PUBLISHABLE_KEY',
-      paypalClientID: 'YOUR_PAYPAL_CLIENT_ID',
-      paypalClientSecret: 'YOUR_PAYPAL_CLIENT_SECRET',
-      paypalAPI: 'https://api-m.sandbox.paypal.com'
+      stripeApiSecretKey: `sk_${env === 'test' ? 'test' : 'live'}_YOUR_SECRET_KEY`,
+      stripeApiPublishableKey: `pk_${env === 'test' ? 'test' : 'live'}_YOUR_PUBLISHABLE_KEY`,
+      paypalClientID: `YOUR_PAYPAL_${env === 'test' ? 'TEST' : 'PRODUCTION'}_CLIENT_ID`,
+      paypalClientSecret: `YOUR_PAYPAL_${env === 'test' ? 'TEST' : 'PRODUCTION'}_CLIENT_SECRET`,
+      paypalAPI: env === 'test' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com'
     };
 
     const yamlData = yaml.dump(secrets);
     await fsp.writeFile(filePath, yamlData, 'utf8');
-    console.log('Created secrets.yml with placeholder values.');
+    console.log(`Created ${path.basename(filePath)} with placeholder values.`);
   } else {
-    console.log('secrets.yml already exists. Skipping.');
+    console.log(`${path.basename(filePath)} already exists. Skipping.`);
   }
 }
 
@@ -74,7 +75,8 @@ async function ensureBlogImageDir(dirPath) {
     await copyDirectory(dataExmplDir, dataDir);
     console.log('Copied data_examples to data.');
     await copyFile(configExamplePath, configPath);
-    await ensureSecretsFile(secretsPath);
+    await ensureSecretsFile(secretsPath, 'production');
+    await ensureSecretsFile(testSecretsPath, 'test');
     await ensureBlogImageDir(blogImgDir);
   } catch (err) {
     console.error('Initialization failed:', err);
