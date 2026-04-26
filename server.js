@@ -85,6 +85,7 @@ app.get('/success.html', (_req, res) => {
   res.render('success');
 });
 
-app.listen(3002, () => {
-  console.log('Server running on http://localhost:3002');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -1,11 +1,10 @@
 import fs from 'fs-extra';
 import path from 'path';
 import yaml from 'js-yaml';
-import {env} from 'node:process';
 
 const encryptionKey = 'v8aNKRf7NaTT';
-const envr = env.ENV === 'test' ? 'test' : 'production';
-console.log(`Running in '${envr}' environment.`);
+const env = process.env.ENV === 'test' ? 'test' : 'production';
+console.log(`Running in '${env}' environment.`);
 
 function getConfig() {
   console.log('Parsing config.yml ...');
@@ -16,7 +15,7 @@ function getConfig() {
       loadAndMergeYaml(config, name);
     });
   }
-  loadAndMergeYaml(config, envr, {optional: true});
+  loadAndMergeYaml(config, env, {optional: true});
   config.baseCurrency ||= config.currencyUnit;
   config.aboutLines = config.about.split(/\r?\n/);
   config.formatCurrency = (number) =>

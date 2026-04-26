@@ -1,21 +1,36 @@
-# ShopBrick
+# ShopBrick 🧱🛒
 
-**ShopBrick** is a static e-commerce framework — deploy anywhere with zero backend infrastructure.  
+**ShopBrick** is a static e-commerce framework — deploy anywhere with zero backend infrastructure.
 Receive your orders directly via **Stripe** or **PayPal**, and manage everything locally with version-controlled product data.
+
+---
+
+## 🚀 Quick Start (5 minutes)
+
+```sh
+git clone git@github.com:shopbrick/shopbrick.git my-shop
+cd my-shop
+npm install
+npm run init
+npm run dev
+```
+
+Open: http://localhost:3000
 
 ---
 
 ## 🚀 Features
 
-- 🛠️ Static site generation — deploy to GitHub Pages, Netlify, or any static host
-- 💳 Stripe & PayPal integration  
-- 📁 Product data stored in the file system
-- 🔣 YAML-based content
-- 🌍 Currency conversion with ExchangeRate API  
-- ⚙️ Configurable shop name, theme, supported currencies & countries  
-- 🛒 Shopping cart functionality built into the frontend  
-- 🧾 Built-in admin panel (local) for PayPal order management  
-- 📝 Blog support (text + inline images)
+* 🛠️ Static site generation — deploy to GitHub Pages, Netlify, or any static host
+* 💳 Stripe & PayPal integration
+* 📁 Product data stored in the file system
+* 🔣 YAML-based content
+* 🌍 Currency conversion with ExchangeRate API
+* ⚙️ Configurable shop name, theme, supported currencies & countries
+* 🛒 Shopping cart functionality built into the frontend
+* 🧾 Built-in admin panel (local) for PayPal order management
+* 📝 Blog support (text + inline images)
+* 📤 Build static version and deploy to GitHub Pages or Netlify with ease
 
 <details>
   <summary>Product Page Example</summary>
@@ -26,18 +41,64 @@ Receive your orders directly via **Stripe** or **PayPal**, and manage everything
 
 ---
 
+## 🚀 Create Your Shop
+
+You can create your own ShopBrick-based store in two ways.
+
+### ⭐ Option 1 — Use GitHub Template (Recommended)
+
+1. Click **"Use this template"** on GitHub
+2. Create a new repository (**can be private**)
+3. Clone your repo:
+
+```sh
+git clone git@github.com:YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO
+```
+
+---
+
+### 🛠️ Option 2 — Manual Setup
+
+```sh
+git clone git@github.com:shopbrick/shopbrick.git my-shop
+cd my-shop
+
+rm -rf .git
+
+git init
+git remote add origin git@github.com:YOUR_USERNAME/my-shop.git
+git add .
+git commit -m "Initial commit"
+git push -u origin main
+```
+
+---
+
+### 🔄 (Optional) Get Updates from ShopBrick
+
+```sh
+git remote add upstream git@github.com:shopbrick/shopbrick.git
+git fetch upstream
+git merge upstream/main
+```
+
+> 💡 Advanced users can use `git rebase upstream/main` for a cleaner history.
+
+---
+
 ## ⚙️ Dependencies
 
-- Node.js
-- TailwindCSS (via CLI)
+* Node.js
+* TailwindCSS (via CLI)
 
 ---
 
 ## 🔌 Integrations
 
-- [Stripe](https://stripe.com)
-- [PayPal](https://paypal.com)
-- [ExchangeRate API](https://exchangerate.host/)
+* Stripe
+* PayPal
+* ExchangeRate API
 
 ---
 
@@ -51,16 +112,8 @@ npm install
 
 ## 🧱 Init Project
 
-Run the following command to generate example products and create the secrets file:
-
 ```sh
 npm run init
-```
-
-Which is equivalent to:
-
-```sh
-node scripts/init.js
 ```
 
 ---
@@ -71,39 +124,26 @@ node scripts/init.js
 npm run dev
 ```
 
-To watch and rebuild TailwindCSS styles during development:
+Tailwind watcher:
 
 ```sh
 npx @tailwindcss/cli -i ./views/css/styles.css -o ./public/css/styles.css -m -w
 ```
 
-<details>
-  <summary>Check different theme configs (click to expand)</summary>
-
-Green theme:
-```sh
-CONFIG=green npm run dev
-```
-
-Orange theme:
-```sh
-CONFIG=orange npm run dev
-```
-</details>
-
 ---
 
 ## ⚙️ Configure Your Shop
 
-Edit `config/config.yml` to:
+Edit `config/config.yml`:
 
-- Set shop name and domain
-- Choose supported currencies and countries
-- Customize theme colors using TailwindCSS classes
+* Shop name and domain
+* Supported currencies and countries
+* Theme colors
 
-Replace hero images in:
-- `public/img/hero.webp`
-- `public/img/about.webp`
+Update images:
+
+* `public/img/hero.webp`
+* `public/img/about.webp`
 
 ---
 
@@ -122,64 +162,26 @@ Replace hero images in:
 
 ## ➕ Add a Product
 
-To create a new product directory, e.g. for `foldable-cat-hammock`:
-
 ```sh
 node scripts/add_product.js foldable-cat-hammock
 ```
-
-Then:
-- Edit `info.yml` to set price, variants, stock
-- Add description in `description.txt`
-- Add images to:
-  - `/images/main/` for carousel
-  - `/images/description/` for inline visuals
-- Optionally, use `description.html` instead of `.txt` for full control
 
 ---
 
 ## 📝 Add a Blog Post
 
-1. Add a new `.txt` file to the `/blogs` directory (e.g. `4.txt`)
-2. To insert an image, place it into `public/img/blog/` (e.g. `4.jpg`)
-3. In your blog text, use `/img/blog/4.jpg` to embed the image
-
-<details>
-  <summary>Blog post example (click to expand)</summary>
-
-**File**: `./blogs/4.txt`
-
-```txt
-Creating a Space That Reflects You
-January 9, 2024
-
-Your living space isn’t just where you eat and sleep — it’s where your personality lives...
-...
-/img/blog/4.jpg
-```
-</details>
+Add `.txt` files to `/blogs` and images to `/public/img/blog`.
 
 ---
 
 ## 💱 Exchange Rate API
 
-Register at [exchangerateapi.com](https://exchangerateapi.com) and update your API key in:
-
-`config/secrets.yml`:
-
 ```yml
-exchangerateApiKey: 'YOUR-EXCHANGE-RATE-API-KEY'
+exchangerateApiKey: 'YOUR-KEY'
 ```
-
-Fetch today's rates:
 
 ```sh
 npm run rates
-```
-
-Update product prices using exchange rates:
-
-```sh
 npm run prices
 ```
 
@@ -187,141 +189,80 @@ npm run prices
 
 ## 💳 Stripe Integration
 
-Register at [stripe.com](https://stripe.com) and place your keys in `config/secrets.yml`:
-
 ```yml
-stripeApiSecretKey: 'sk_test_YOUR_SECRET_KEY'
-stripeApiPublishableKey: 'pk_test_YOUR_PUBLISHABLE_KEY'
+stripeApiSecretKey: 'sk_test_...'
+stripeApiPublishableKey: 'pk_test_...'
 ```
-
-Export products into your Stripe catalog:
 
 ```sh
 npm run stripe
 ```
 
-After testing, update with your live keys.  
-You can configure your checkout page colors in the Stripe dashboard. Check [the doc](https://github.com/shopbrick/shopbrick/blob/main/doc/STRIPE.md#-customize-checkout-colors-and-appearance).
-
 ---
 
 ## 💰 PayPal Integration
 
-Register at [paypal.com](https://paypal.com) and insert your credentials into `config/secrets.yml`:
-
 ```yml
-paypalClientID: 'YOUR_PAYPAL_CLIENT_ID'
-paypalClientSecret: 'YOUR_PAYPAL_CLIENT_SECRET'
-paypalAPI: 'https://api-m.sandbox.paypal.com' # Use production URL for live
+paypalClientID: '...'
+paypalClientSecret: '...'
 ```
 
 ---
 
 ## 🏗️ Build Static Site
 
-Create a production-ready static site:
-
 ```sh
 npm run build
 ```
 
-To preview locally (with [Caddy](https://caddyserver.com)):
+Preview:
 
 ```sh
 cd build
 caddy file-server --browse --listen :9000
 ```
 
-Visit: [http://localhost:9000](http://localhost:9000)
+---
+
+## 🚀 Deploy
+
+### GitHub Pages
+
+* Push `/build` to repo
+
+### Netlify
+
+* Build: `npm run build`
+* Publish: `build`
 
 ---
 
-## 🚀 Deploy to GitHub Pages
+## 📦 Orders
 
-1. Create repo: `yourcompany.github.io`
-2. Commit & push your `/build` directory
-3. In GitHub settings, set the branch to deploy from `/build`
-4. Configure custom domain in DNS (optional)
-
----
-
-## 🚀 Deploy to Netlify
-
-1. Connect your repo in [Netlify](https://netlify.com)
-2. Set build command to:
-   ```sh
-   npm run build
-   ```
-3. Set publish directory to:
-   ```sh
-   build
-   ```
-4. Configure environment variables in Netlify UI (Stripe, PayPal, etc.)
-
----
-
-## 📦 Manage Stripe Orders
-
-Go to [stripe.com](https://stripe.com) → Payments → Orders  
-ShopBrick saves:
-- Selected product variants (as line items)
-- Customer name, address, email
-
-You can mark orders as fulfilled by prepending `[FULFILLED]` to the order name.
-
----
-
-## 📦 Manage PayPal Orders
-
-PayPal transactions may not include full product/item info.  
-Use the **local admin panel** to view and manage orders:
+Stripe → dashboard
+PayPal → local admin panel:
 
 ```sh
 npm run admin
 ```
 
-This fetches orders and product line items from PayPal API and shows them in a dashboard.
-
-![Local admin panel to see PayPal orders](https://raw.githubusercontent.com/shopbrick/shopbrick/main/doc/img/admin_paypal_orders.webp)
-
 ---
 
-## 📈 Integrate Google Analytics
+## 📈 Google Analytics
 
-<details>
-  <summary>Instructions (click to expand)</summary>
-
-1. Open `views/templates/header.ejs`
-2. Paste the GA snippet before `</head>`
-
-```html
-<script async src="https://www.googletagmanager.com/gtag/js?id=REPLACE_WITH_ID"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'REPLACE_WITH_ID');
-</script>
-```
-</details>
+Add script to `header.ejs`
 
 ---
 
 ## 🧾 Handy Aliases
 
-Add these to your shell profile (e.g. `.zshrc`, `.bashrc`) for quick usage:
-
 ```sh
 alias nrd="npm run dev"
-alias tw="npx @tailwindcss/cli -i ./views/css/styles.css -o ./public/css/styles.css -m -w"
-alias rates="npm run rates"
-alias prices="npm run prices"
-alias stripe="npm run stripe"
 alias build="npm run build"
 ```
 
 ---
 
-### ❤️ Like ShopBrick?
+## ❤️ Like ShopBrick?
 
-Star it on GitHub, share it with others, or fork it for your own use!
+Star it, use it, or build something awesome with it.
