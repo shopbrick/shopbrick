@@ -10,8 +10,12 @@
         </address>
         <nav class="hidden flex-col gap-2 md:flex" aria-label="footer">
           <a href="/#products" class="hover:opacity-90">Shop</a>
+        <% if (hasTestimonials) { %>
           <a href="/#testimonials" class="hover:opacity-90">Reviews</a>
+        <% } %>
+        <% if (hasBlogs) { %>
           <a href="/blogs.html" class="hover:opacity-90">Blogs</a>
+        <% } %>
           <a href="/#contact" class="hover:opacity-90">Contact Us</a>
         </nav>
         <nav class="hidden flex-col gap-2 md:flex" aria-label="footer">

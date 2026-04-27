@@ -1,6 +1,8 @@
 <%- include('templates/header') %>
 <%- include('templates/home/hero') %>
-<%- include('templates/home/testimonials') %>
+<% if (hasTestimonials) { %>
+  <%- include('templates/home/testimonials') %>
+<% } %>
 <% featuredProducts.forEach((product) => { %>
   <%- include('templates/products/featuring_product', {product}) %>
 <% }) %>

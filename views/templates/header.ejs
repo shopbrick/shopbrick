@@ -31,7 +31,9 @@
             <a href="/#products" class="hover:opacity-90">Shop</a>
             <!-- <a href="/#track" class="hover:opacity-90">Track Your Order</a> -->
             <a href="/#about" class="hover:opacity-90">About</a>
+          <% if (hasBlogs > 0) { %>
             <a href="/blogs.html" class="hover:opacity-90">Blogs</a>
+          <% } %>
             <%- include('light_dark_mode_theme_toggle_button') %>
             <%- include('country_select') %>
             <%- include('currency_select') %>
@@ -47,14 +49,18 @@
         <nav class="flex min-h-screen flex-col items-center py-8" aria-label="mobile">
           <a href="/#products" class="w-full py-6 text-center hover:opacity-90">Shop</a>
           <a href="/#best-seller" class="w-full py-6 text-center hover:opacity-90">Best Seller</a>
+        <% if (hasTestimonials) { %>
           <a href="/#testimonials" class="w-full py-6 text-center hover:opacity-90">Reviews</a>
+        <% } %>
           <!-- <a href="/#track" class="w-full py-6 text-center hover:opacity-90">Track Your Order</a> -->
           <a href="/#about" class="w-full py-6 text-center hover:opacity-90">About Us</a>
           <a href="/cart.html" class="relative hover:opacity-90">
             &#128717;
             <span class="cartSize absolute -bottom-2 -left-2 bg-white text-black text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-300 shadow-md invisible" />
           </a>
+        <% if (hasBlogs) { %>
           <a href="/blogs.html" class="w-full py-6 text-center hover:opacity-90">Blogs</a>
+        <% } %>
         </nav>
       </section>
     </header>
