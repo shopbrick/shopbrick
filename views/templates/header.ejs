@@ -11,17 +11,29 @@
     <link rel="stylesheet" href="/css/styles.css" />
     <script>const products = {}; const defaultCountry = '<%- site.defaultCountry %>'; const defaultCurrency = '<%- site.baseCurrency %>'; let locale = '<%- site.locale %>'; let currency = '<%- site.baseCurrency %>';</script>
     <script src="/js/menu-button.js" defer></script>
-    <script src="/js/flowbite.min.js" defer></script>
     <script src="https://js.stripe.com/v3"></script>
     <script src="/js/cart.js" defer></script>
+  <% if (site.paypalClientID && !site.paypalClientID.startsWith('YOUR_PAYPAL')) { %>
     <script src="https://www.paypal.com/sdk/js?client-id=<%- site.paypalClientID %>&currency=USD"></script>
+  <% } %>
   </head>
-
+  <%- site.googleTag %>
   <body class="min-h-screen flex flex-col bg-slate-50 dark:bg-black dark:text-white">
+  <% if (env && env !=='production' && env !== 'live') { %>
+    <div class="fixed top-2 left-2 z-150">
+      <div class="bg-red-600 text-white font-bold text-xs px-3 py-1 shadow-m backdrop-blur-sm">
+        <%= env.toUpperCase() %>
+      </div>
+    </div>
+  <% } %>
     <header class="sticky top-0 z-50 <%- site.mainBgColor %> text-white">
       <section class="mx-auto flex max-w-4xl items-center justify-between p-4">
         <h1 class="<%- site.headerTitleClass %>">
-          <a href="/#hero"><%= site.emoji %> <%- site.company %></a>
+        <% if (site.logoImg) { %>
+          <a href="/#hero" class="flex items-center gap-2"><img src="/img/<%- site.logoImg %>" alt="<%- site.company %>" class="h-10 w-10 object-contain" /> <%- site.companyHeaderTitleHtml || site.company %></a>
+        <% } else if (site.emoji) { %>
+          <a href="/#hero"><%= site.emoji %> <%- site.companyHeaderTitleHtml || site.company %></a>
+        <% } %>
         </h1>
         <div>
           <button id="weight-plates-button" class="relative h-8 w-8 cursor-pointer text-3xl md:hidden">

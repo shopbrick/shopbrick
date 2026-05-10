@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import fsExtra from 'fs-extra';
-import config from '../src/config.js';
+import config, {env} from '../src/config.js';
 import {getProducts} from '../src/products.js';
 import {getBlogs} from '../src/blogs.js';
 
@@ -13,9 +13,10 @@ import {getBlogs} from '../src/blogs.js';
 const pageRoutes = ['about', 'cart', 'blogs'];
 const products = getProducts();
 const blogs = getBlogs();
+const buildFolder = env !== 'test' ? 'build' : 'build_test';
 
 async function generateRedirects() {
-  const buildDir = path.join(process.cwd(), 'build');
+  const buildDir = path.join(process.cwd(), buildFolder);
   const productsDir = path.join(buildDir, 'products');
   const blogsDir = path.join(buildDir, 'blogs');
   await fsExtra.ensureDir(buildDir);
@@ -41,7 +42,7 @@ async function generateRedirectHTMLPage(buildDir, dirPath) {
   const fileDir = path.join(buildDir, dirPath);
   const filePath = path.join(buildDir, dirPath, 'index.html');
   await fsExtra.ensureDir(fileDir);
-  console.log(`📁 Created dir ./build/${dirPath}/`);
+  console.log(`📁 Created dir ./${buildFolder}/${dirPath}/`);
   const pageURL = `https://${config.domain}/${dirPath}.html`;
   const content = `<!DOCTYPE html>
 <meta charset="utf-8">
@@ -49,7 +50,7 @@ async function generateRedirectHTMLPage(buildDir, dirPath) {
 <meta http-equiv="refresh" content="0; URL=${pageURL}">
 <link rel="canonical" href="${pageURL}">`;
   fs.writeFileSync(filePath, content, 'utf-8');
-  console.log(` ⬅️  Generated: ./build/${dirPath}/index.html`);
+  console.log(` ⬅️  Generated: ./${buildFolder}/${dirPath}/index.html`);
 }
 
 generateRedirects().catch(console.error);

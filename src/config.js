@@ -2,12 +2,19 @@ import fs from 'fs-extra';
 import path from 'path';
 import yaml from 'js-yaml';
 
-const encryptionKey = 'v8aNKRf7NaTT';
-const env = process.env.ENV === 'test' ? 'test' : 'production';
+const defaultEncryptionKey = 'v8aNKRf7NaTT';
+
+const envRaw = process.env.ENV ?? 'test';
+const testEnv = 'test';
+const prodEnv = 'production';
+const prodAliases = ['prod', 'live'];
+const knownEnvs = [testEnv, prodEnv, ...prodAliases];
+if (!knownEnvs.includes(envRaw)) throw new Error(`ENV variable is set to '${envRaw}', but it should be one of: ${knownEnvs.join(', ')}.`);
+export const env = prodAliases.includes(envRaw) ? prodEnv : envRaw;
 console.log(`Running in '${env}' environment.`);
 
 function getConfig() {
-  console.log('Parsing config.yml ...');
+  console.log('Parsing config.yml…');
   const config = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'config.yml'), 'utf8'));
 
   if (env.CONFIG) {
@@ -15,12 +22,13 @@ function getConfig() {
       loadAndMergeYaml(config, name);
     });
   }
+  loadAndMergeYaml(config, 'secrets', {optional: true});
   loadAndMergeYaml(config, env, {optional: true});
   config.baseCurrency ||= config.currencyUnit;
   config.aboutLines = config.about.split(/\r?\n/);
   config.formatCurrency = (number) =>
     new Intl.NumberFormat(config.locale, { style: 'currency', currency: config.baseCurrency }).format(number);
-  config.encryptionKey ||= encryptionKey;
+  config.encryptionKey ||= defaultEncryptionKey;
   return config;
 }
 

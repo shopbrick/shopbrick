@@ -3,8 +3,8 @@
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row -mx-4">
       <div class="md:flex-1 px-4">
-        <div class="h-[460px] rounded-lg mb-2">
-          <%- include('templates/products/carousel') %>
+        <div class="h-115 rounded-lg mb-2">
+          <%- include('templates/products/carousel1') %>
         </div>
         <%- include('templates/products/add_to_cart_buttons_small') %>
       </div>
@@ -15,8 +15,8 @@
           <%- include('templates/products/star_rating_precise') %>
         <% } %>
           <p class="mt-3">
-            <% if (product.sale) { %>
-            <span class="line-through text-lg mr-1 productOldPrice" data-pk="<%- product.pk %>"><%= formatCurrency(getProductOldPrice(product)) %></span>
+            <% if (product.compare_at_price) { %>
+            <span class="line-through text-lg text-red-500 mr-1 productOldPrice" data-pk="<%- product.pk %>"><%= formatCurrency(getProductCompareAtPrice(product)) %></span>
             <% } %>
             <span class="font-bold text-xl productPrice" data-pk="<%- product.pk %>"><%= formatCurrency(getProductPrice(product)) %></span>
             <% if (product.sale) { %>
@@ -33,7 +33,7 @@
         <% } %>
         <div class="mb-4">
           <label for="quantity-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity:</label>
-          <div class="relative flex items-center max-w-[8rem]">
+          <div class="relative flex items-center max-w-32">
             <button type="button" onclick="decrementProduct('<%- product.pk %>')"
               class="cursor-pointer bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg px-3 h-12 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
               <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
@@ -60,7 +60,9 @@
             <img class="mx-auto rounded-sm" src="/img/paymentcard.png" alt="Payment card methods" />
           </div>
         </div>
+      <% if (site.paypalClientID && !site.paypalClientID.startsWith('YOUR_PAYPAL')) { %>
         <%- include('templates/products/paypal_button') %>
+      <% } %>
         <%- include('templates/products/shipping_info_accordion') %>
         <div>
           <%- product.description %>
@@ -73,7 +75,7 @@
 <% if (product.disabled) { %>
 <script>products['<%- product.pk %>'] = <%- JSON.stringify({price: product.price}) %>;</script>
 <% } else { %>
-<script>products['<%- product.pk %>'] = <%- JSON.stringify({title: product.title, image: product.images[0], price: product.price, stripePrices: encryptValues(product.stripePrices, site.encryptionKey), isSizeBasedPrice: product.isSizeBasedPrice, size: product.size}) %>;</script>
+<script>products['<%- product.pk %>'] = <%- JSON.stringify({title: product.title, images: product.images, imagesByColor: product.imagesByColor, colors: product.colors, price: product.price, compareAtPrice: product.compare_at_price, stripePrices: encryptValues(product.stripePrices, site.encryptionKey), isSizeBasedPrice: product.isSizeBasedPrice, size: product.size}) %>;</script>
 <% } %>
 <% if (product.reviews.length > 0) { %>
 <%- include('templates/products/reviews') %>

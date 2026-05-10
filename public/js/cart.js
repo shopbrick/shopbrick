@@ -1,6 +1,7 @@
 const MAX_PRODUCT_COUNT = 10;
 let cart;
 let country;
+const imageIndex = {};
 
 function loadCart() {
   const savedCart = JSON.parse(localStorage.getItem('cart') || '{}');
@@ -41,7 +42,7 @@ function getProductVariant(pk) {
   const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
   const size = document.querySelector(`.productSize-${pk}.active`)?.getAttribute('data-value');
   // const size = products[pk].size;
-  return [pk, color, size].filter(Boolean).map((v) => v.toLowerCase()).join('-');
+  return [pk, color, size].filter(Boolean).map((v) => v.toLowerCase()).join('-').replaceAll(' ', '_');
 }
 
 function getProductQty(pk) {
@@ -83,6 +84,8 @@ function selectColor(currentElement, pk) {
     element.classList.remove('active');
   }
   currentElement.classList.add('active');
+  imageIndex[pk] = 0;
+  renderImage(pk);
 }
 
 function selectSize(currentElement, pk) {
@@ -102,8 +105,8 @@ function addProductToCart(pk) {
   const pvk = getProductVariant(pk);
   const qty = getProductQty(pk);
   const productName = products[pk].title;
-  const productImg = products[pk].image;
   const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
+  const productImg = products[pk].imagesByColor[color]?.[0] || products[pk].images[0];
   const size = document.querySelector(`.productSize-${pk}.active`)?.getAttribute('data-value');
   // const size = products[pk].size;
   const price = products[pk].isSizeBasedPrice ? products[pk].price[size] : products[pk].price;
@@ -141,6 +144,7 @@ function restoreProductsQty() {
           element.classList.remove('active');
         }
         document.getElementById(`productColor-${item.pk}-${item.color}`)?.classList.add('active');
+        renderImage(item.pk);
       }
       if (item.size) {
         const productSizes = document.getElementsByClassName(`productSize-${item.pk}`);
@@ -221,7 +225,7 @@ function displayCart() {
             <p class="text-gray-500 dark:text-gray-400">${formatCurrency(item.price[currency])}</p>
           </div>
           <div class="mt-4 flex gap-3 items-center justify-between">
-            <div class="relative flex items-center max-w-[8rem]">
+            <div class="relative flex items-center max-w-32">
               <button type="button" onclick="decrementItem('${pvk}')"
                 class="cursor-pointer bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg px-3 h-12 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                 <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
@@ -239,10 +243,9 @@ function displayCart() {
               </button>
             </div>
           </div>
-          ${cartCount > 1 ? 
-          `<div onclick="clearItem('${pvk}')" class="hidden sm:flex flex-col items-starts h-60">
+          <div onclick="clearItem('${pvk}')" class="hidden sm:flex flex-col items-starts h-60">
             <button class="text-gray-500 dark:text-gray-400 hover:text-red-500 text-xl cursor-pointer">&times;</button>
-          </div>` : ''}
+          </div>
         `;
 
         cartItems.appendChild(itemDiv);
@@ -342,7 +345,7 @@ function updateAllProductsPrices() {
   const oldPriceElems = document.getElementsByClassName('productOldPrice');
   for (const oldPriceElem of oldPriceElems) {
     const pk = oldPriceElem.getAttribute('data-pk');
-    oldPriceElem.textContent = formatCurrency(getProductOldPrice(pk));
+    oldPriceElem.textContent = formatCurrency(getProductCompareAtPrice(pk));
   }
 }
 
@@ -354,7 +357,7 @@ function updateProductPrice(pk) {
 
   const oldPriceElems = document.querySelectorAll(`.productOldPrice[data-pk="${pk}"]`);
   for (const oldPriceElem of oldPriceElems) {
-    oldPriceElem.textContent = formatCurrency(getProductOldPrice(pk));
+    oldPriceElem.textContent = formatCurrency(getProductCompareAtPrice(pk));
   }
 }
 
@@ -364,8 +367,8 @@ function getProductPrice(pk) {
   return products[pk].isSizeBasedPrice ? products[pk].price[products[pk].size][currency] : products[pk].price[currency];
 }
 
-function getProductOldPrice(pk) {
-  return getProductPrice(pk) * 2;
+function getProductCompareAtPrice(pk) {
+  return products[pk].isSizeBasedPrice ? products[pk].compareAtPrice?.[products[pk].size]?.[currency] : products[pk].compareAtPrice?.[currency];
 }
 
 function getCurrencyFromLocale() {
@@ -466,4 +469,31 @@ function urgencyMessage() {
     const index = Math.floor(Math.random() * messages.length);
     urgencyElem.textContent = messages[index];
   }
+}
+
+function getProductVariantImages(pk) {
+  const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
+  const colorImages = products[pk].imagesByColor[color];
+  return colorImages && colorImages.length > 0 ? colorImages : products[pk].images;
+}
+
+function renderImage(pk) {
+  const images = getProductVariantImages(pk);
+  const imgEl = document.getElementById(`carouselImage-${pk}`);
+
+  imgEl.src = images[imageIndex[pk] ?? 0];
+}
+
+function nextSlide(pk) {
+  const n = getProductVariantImages(pk).length;
+
+  imageIndex[pk] = ((imageIndex[pk] ?? 0) + 1) % n;
+  renderImage(pk);
+}
+
+function prevSlide(pk) {
+  const n = getProductVariantImages(pk).length;
+
+  imageIndex[pk] = ((imageIndex[pk] ?? 0) - 1 + n) % n;
+  renderImage(pk);
 }

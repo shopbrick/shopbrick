@@ -10,7 +10,7 @@ import {updateAllProductsPrices, updateProductPrices} from '../src/products.js';
 const exchRates = await fetchExchRates(cfg.exchangerateApiKey, cfg.currencyUnit);
 if (!exchRates) throw new Error(`Cannot get exchRates`) ;
 
-const pk = process.argv.find((a) => a.startsWith('--product='))?.replace('--product=', '') ?? process.argv.find((a) => a.startsWith('-p='))?.replace('-p=', '');
+const pk = process.argv.find((a) => a.startsWith('--product='))?.replace('--product=', '') ?? process.argv.find((a) => a.startsWith('-p='))?.replace('-p=', '') ?? process.argv.find((a) => a.startsWith('--pk='))?.replace('--pk=', '');
 
 if (pk) {
   updateProductPrices(pk, exchRates);

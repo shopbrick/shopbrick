@@ -4,20 +4,22 @@ import yaml from 'js-yaml';
 import Stripe from 'stripe';
 import {writeYamlFile} from './utils.js';
 import {getProduct, getProductVariants, getProductPrice} from './products.js';
-import site from './config.js';
+import site, {env} from './config.js';
 
-const dataDir = path.join(process.cwd(), 'data');
-const stripeArchive = 'stripe_archive';
+const productsDir = path.join(process.cwd(), 'products');
+const envSuffix = env === 'production' ? 'live' : 'test';
+const stripeFileName = `stripe_${envSuffix}.yml`;
+const stripeArchiveFolder = `stripe_archive_${envSuffix}`;
 
 export function getStripeProductVariants(pk) {
-  const filePath = path.join(dataDir, pk, 'stripe.yml');
+  const filePath = path.join(productsDir, pk, stripeFileName);
   if (!fs.existsSync(filePath)) return {};
 
   return yaml.load(fs.readFileSync(filePath, 'utf8'));
 }
 
 export function saveStripeProductVariants(pk, data) {
-  const filePath = path.join(dataDir, pk, 'stripe.yml');
+  const filePath = path.join(productsDir, pk, stripeFileName);
 
   writeYamlFile(filePath, data);
 }
@@ -32,14 +34,14 @@ export async function createStripePrice(stripeProductVariant, stripe, currency, 
 }
 
 export function getArchivedPrices(pk, pvk) {
-  const filePath = path.join(dataDir, pk, stripeArchive, `${pvk}.yml`);
+  const filePath = path.join(productsDir, pk, stripeArchiveFolder, `${pvk}.yml`);
   if (!fs.existsSync(filePath)) return {};
 
   return yaml.load(fs.readFileSync(filePath, 'utf8'));
 }
 
 export function saveArchivedPrices(pk, pvk, data) {
-  const dir = path.join(dataDir, pk, stripeArchive);
+  const dir = path.join(productsDir, pk, stripeArchiveFolder);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir);
   const filePath = path.join(dir, `${pvk}.yml`);
   for (const currency in data) {
@@ -67,8 +69,7 @@ export function searchArchivedPrice(sortedPrices, unitAmount) {
 }
 
 export async function updateAllStripeProductPrices() {
-  const dataDir = path.join(process.cwd(), 'data');
-  const productDirs = fs.readdirSync(dataDir, {withFileTypes: true})
+  const productDirs = fs.readdirSync(productsDir, {withFileTypes: true})
       .filter((entry) => entry.isDirectory())
       .map((entry) => entry.name);
 
@@ -83,9 +84,11 @@ export async function updateStripeProductPrices(pk) {
 
   for (const pvk in variants) {
     const variant = variants[pvk];
+    const colorImages = product.imagesByColor?.[variant.color];
+    const varntImages = colorImages && colorImages.length ? colorImages : product.images;
     const data = {
       name: variant.name,
-      images: product.images.slice(0, 8).map((i) => `https://${site.domain}${i}`),
+      images: varntImages.slice(0, 8).map((i) => `https://${site.domain}${i}`),
       statement_descriptor: site.company,
       url: `https://${site.domain}/products/${pk}.html`,
     };

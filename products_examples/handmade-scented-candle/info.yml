@@ -8,3 +8,5 @@ colors:
   - Charcoal
 price:
   USD: 24.50
+compare_at_price_offset: 4
+round_calculated_prices_to_99_cents: true

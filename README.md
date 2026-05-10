@@ -3,6 +3,8 @@
 **ShopBrick** is a static e-commerce framework — deploy anywhere with zero backend infrastructure.
 Receive your orders directly via **Stripe** or **PayPal**, and manage everything locally with version-controlled product data.
 
+![ShopBrick's Mascot - Brick](https://raw.githubusercontent.com/shopbrick/shopbrick/refs/heads/main/doc/img/brick-mascot.png "ShopBrick's Mascot - Brick")
+
 ---
 
 ## 🚀 Quick Start (5 minutes)
@@ -145,12 +147,27 @@ Update images:
 * `public/img/hero.webp`
 * `public/img/about.webp`
 
+Other config files are in `.gitignore` - Do NOT push them to public repos. Even better, do NOT push to any repos at all:
+
+* `config/secrets.yml` - loaded in all environments
+* `config/test.yml` - loaded in test environment
+* `config/production.yml` - loaded for production/live environment
+
+You can pass custom configs:
+
+```sh
+CONFIG=theme/green.yml ENV=test npm run dev
+```
+```sh
+CONFIG=theme/orange.yml ENV=test npm run dev
+```
+
 ---
 
 ## 📁 Product Data Structure
 
 ```sh
-/data
+/products
 ├── /<product-handle>
 │   ├── info.yml
 │   ├── description.txt
@@ -176,31 +193,48 @@ Add `.txt` files to `/blogs` and images to `/public/img/blog`.
 
 ## 💱 Exchange Rate API
 
+Add into `config/secrets.yml` (loaded in both `test` and `production` environments)
+
 ```yml
 exchangerateApiKey: 'YOUR-KEY'
 ```
 
 ```sh
-npm run rates
-npm run prices
+npm run get-rates
+npm run convert-prices
 ```
 
 ---
 
 ## 💳 Stripe Integration
 
+Add into `config/test.yml`
+
 ```yml
-stripeApiSecretKey: 'sk_test_...'
 stripeApiPublishableKey: 'pk_test_...'
+stripeApiSecretKey: 'sk_test_...'
 ```
 
 ```sh
-npm run stripe
+ENV=test npm run stripe
+```
+
+and `config/production.yml`
+
+```yml
+stripeApiPublishableKey: 'pk_live_...'
+stripeApiSecretKey: 'sk_live_...'
+```
+
+```sh
+ENV=prod npm run sync-stripe
 ```
 
 ---
 
 ## 💰 PayPal Integration
+
+Add into `config/test.yml` and `config/production.yml`
 
 ```yml
 paypalClientID: '...'
@@ -212,7 +246,7 @@ paypalClientSecret: '...'
 ## 🏗️ Build Static Site
 
 ```sh
-npm run build
+ENV=prod npm run build
 ```
 
 Preview:

@@ -22,12 +22,12 @@ export function copyDirSync(src, dest) {
   }
 }
 
-const dataDir = path.join(process.cwd(), 'data');
-const buildDir = path.join(process.cwd(), 'build');
+const productsDir = path.join(process.cwd(), 'products');
 const imageExtensions = /\.(png|jpe?g|webp|gif|bmp|svg)$/i;
 
-export function copyProductImages(pk, folder) {
-  const srcDir = path.join(dataDir, pk, 'images', folder);
+export function copyProductImages(buildFolder, pk, folder) {
+  const buildDir = path.join(process.cwd(), buildFolder);
+  const srcDir = path.join(productsDir, pk, 'images', folder);
   const destDir = path.join(buildDir, 'img', 'products', pk, folder);
 
   if (!fs.existsSync(srcDir)) {
@@ -47,7 +47,7 @@ export function copyProductImages(pk, folder) {
       fs.copyFileSync(srcFile, destFile);
     }
   }
-  console.log(`🖼️ Images copied: ./${path.join('build', 'img', 'products', pk, folder)}/`);
+  console.log(`🖼️ Images copied: ./${path.join(buildFolder, 'img', 'products', pk, folder)}/`);
 }
 
 export async function minifyHTML(html) {

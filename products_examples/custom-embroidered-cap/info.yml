@@ -19,3 +19,5 @@ price:
     USD: 23.50
   Large:
     USD: 25.00
+compare_at_price_offset: 4
+round_calculated_prices_to_99_cents: true

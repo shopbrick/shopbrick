@@ -1,7 +1,7 @@
 import express from 'express';
 import {join} from 'path';
 import fs from 'fs-extra';
-import {getProductWithStripePrices, getProductsWithStripePrices, getProductPrice, getProductOldPrice} from './src/products.js';
+import {productsDir, getProductWithStripePrices, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice} from './src/products.js';
 import config from './src/config.js';
 import {getBlogs} from './src/blogs.js';
 import {indexBy, encryptValues} from './src/utils.js';
@@ -16,8 +16,9 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 app.use((_req, res, next) => {
+  res.locals.env = process.env.ENV;
   res.locals.getProductPrice = getProductPrice;
-  res.locals.getProductOldPrice = getProductOldPrice;
+  res.locals.getProductCompareAtPrice = getProductCompareAtPrice;
   res.locals.site = config;
   res.locals.hasBlogs = blogs.length > 0;
   res.locals.hasTestimonials = Array.isArray(config.testimonials) && config.testimonials.length > 0;
@@ -45,7 +46,7 @@ app.get('/404.html', (_req, res) => {
 
 app.get('/img/products/:handle/:category/:filename', (req, res) => {
   const {handle, category, filename} = req.params;
-  const filePath = join(process.cwd(), 'data', handle, 'images', category, filename);
+  const filePath = join(productsDir, handle, 'images', category, filename);
 
   if (fs.existsSync(filePath)) {
     res.sendFile(filePath);

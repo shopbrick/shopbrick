@@ -1,20 +1,20 @@
 import fs from 'fs-extra';
-import path from 'path';
+import path, { normalize } from 'path';
 import yaml from 'js-yaml';
 import {writeYamlFile, convertDescriptionTxtToHtml} from './utils.js';
-import config from './config.js';
+import config, {env} from './config.js';
 
 const {company, baseCurrency, supportedCurrencies} = config;
-const dataDir = path.join(process.cwd(), 'data');
+export const productsDir = path.join(process.cwd(), 'products');
 
 export function getProducts() {
-  const productDirs = fs.readdirSync(dataDir);
+  const productDirs = fs.readdirSync(productsDir);
 
   return productDirs.map((pk) => getProduct(pk)).filter(Boolean);
 }
 
 export function getProduct(pk) {
-  const filePath = path.join(dataDir, pk, 'info.yml');
+  const filePath = path.join(productsDir, pk, 'info.yml');
   if (!fs.existsSync(filePath)) return;
 
   const fileContent = fs.readFileSync(filePath, 'utf8');
@@ -22,6 +22,7 @@ export function getProduct(pk) {
   const brandedTitle = `${company}™ ${productData.title}`;
   const name = productData.branded && productData.title.indexOf('™') === -1 ? `${company}™ ${productData.title}` : productData.title;
   const images = getProductImages(pk, 'main');
+  const imagesByColor = getProductImagesByColor(pk, productData.colors);
   const description = getProductDescription(pk);
   const reviews = getProductReviews(pk);
   if (reviews.length > 0) {
@@ -37,7 +38,7 @@ export function getProduct(pk) {
     // productData.price = {...productData.price[productData.size], ...productData.price};
   }
 
-  return {handle: pk, pk, ...productData, brandedTitle, name, images, description, reviews};
+  return {handle: pk, pk, ...productData, brandedTitle, name, images, imagesByColor, description, reviews};
 }
 
 function doesPriceDependOnSize(productData) {
@@ -46,13 +47,31 @@ function doesPriceDependOnSize(productData) {
 
 const imageExtensions = /\.(png|jpe?g|webp|gif|bmp|svg)$/i;
 
-function getProductImages(pk, folder = 'main') {
-  const imagesChildDir = path.join(process.cwd(), 'data', pk, 'images', folder);
+function isMainImage(filename) {
+  return /(^|[_-])main\d*([_.-])/i.test(filename);
+}
 
-  if (!fs.existsSync(imagesChildDir)) return [];
+function imageOrderComparator(a, b) {
+  const aMain = isMainImage(a);
+  const bMain = isMainImage(b);
+
+  // main images first
+  if (aMain && !bMain) return -1;
+  if (!aMain && bMain) return 1;
+
+  // fallback: keep stable-ish order (alphabetical)
+  return a.localeCompare(b);
+}
+
+function getProductImages(pk, folder = 'main') {
+  const imagesChildDir = path.join(productsDir, pk, 'images', folder);
+
+  if (!fs.existsSync(imagesChildDir))
+    return folder === 'main' ? ['/img/noimg.webp'] : [];
 
   const images = fs.readdirSync(imagesChildDir)
     .filter((filename) => imageExtensions.test(filename))
+    .sort(imageOrderComparator)
     .map((filename) => `/img/products/${pk}/${folder}/${filename}`);
 
   if (images.length === 0 && folder === 'main')
@@ -61,8 +80,29 @@ function getProductImages(pk, folder = 'main') {
   return images;
 };
 
+function getProductImagesByColor(pk, colors) {
+  const folder = 'main';
+  const imagesChildDir = path.join(productsDir, pk, 'images', folder);
+  const res = {};
+  if (!colors ||!fs.existsSync(imagesChildDir)) return res;
+
+  const allFilenames = fs.readdirSync(imagesChildDir)
+    .filter((filename) => imageExtensions.test(filename));
+
+  for (const color of colors) {
+    const colorKey = color.toLowerCase().replaceAll(' ', '-');
+    const colorImages = allFilenames
+      .filter((filename) => filename.toLowerCase().includes(colorKey))
+      .sort(imageOrderComparator)
+      .map((filename) => `/img/products/${pk}/${folder}/${filename}`)
+
+    res[color] = colorImages;
+  }
+  return res;
+}
+
 function getProductDescription(pk) {
-  const filePath = path.join(dataDir, pk, 'description.html');
+  const filePath = path.join(productsDir, pk, 'description.html');
   if (!fs.existsSync(filePath)) return getProductDescriptionTxt(pk);
 
   const description = fs.readFileSync(filePath, 'utf8');
@@ -70,8 +110,8 @@ function getProductDescription(pk) {
 }
 
 function getProductDescriptionTxt(pk) {
-  let filePath = path.join(dataDir, pk, 'description.txt');
-  if (!fs.existsSync(filePath)) filePath = path.join(dataDir, pk, 'desc.txt');
+  let filePath = path.join(productsDir, pk, 'description.txt');
+  if (!fs.existsSync(filePath)) filePath = path.join(productsDir, pk, 'desc.txt');
   if (!fs.existsSync(filePath)) return;
 
   const descriptionTxt = fs.readFileSync(filePath, 'utf8');
@@ -80,18 +120,16 @@ function getProductDescriptionTxt(pk) {
 }
 
 export function getProductPrice(product, currency = baseCurrency, size = product.size) {
-  // return Math.floor(product.price[currency] + 0.5) * 2;
   return product.isSizeBasedPrice ? product.price[size][currency] : product.price[currency];
 }
 
-export function getProductOldPrice(product) {
-  // return Math.floor(product.price[currency] + 0.5) * 2;
-  return getProductPrice(product) * 2;
+export function getProductCompareAtPrice(product, currency = baseCurrency, size = product.size) {
+  return product.isSizeBasedPrice ? product.compare_at_price?.[size]?.[currency] : product.compare_at_price?.[currency];
 }
 
 function getProductReviews(pk) {
   try {
-    const filePath = path.join(dataDir, pk, 'reviews.yml');
+    const filePath = path.join(productsDir, pk, 'reviews.yml');
     if (!fs.existsSync(filePath)) return [];
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const reviews = yaml.load(fileContents);
@@ -124,17 +162,38 @@ export function getProductVariants(product) {
 }
 
 export function updateAllProductsPrices(exchRates) {
-  const productDirs = fs.readdirSync(dataDir, {withFileTypes: true})
+  const productDirs = fs.readdirSync(productsDir, {withFileTypes: true})
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name);
 
   productDirs.forEach((pk) => updateProductPrices(pk, exchRates));
 }
 
+function roundPrice(value) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
+function calculateCompareAtBasePrice(basePrice, compareAtPriceOffset, compareAtPriceRatio) {
+  if (compareAtPriceOffset !== undefined) {
+    return roundPrice(basePrice + compareAtPriceOffset);
+  }
+  if (compareAtPriceRatio !== undefined) {
+    return roundPrice(basePrice * compareAtPriceRatio);
+  }
+  return undefined;
+}
+
+function calculateConvertedPrice(value, exchangeRate, roundCalculatedPricesTo99Cents) {
+  if (roundCalculatedPricesTo99Cents) {
+    return Math.floor(exchangeRate * value * 1.01 + 0.5) - 0.01;
+  }
+  return roundPrice(exchangeRate * value);
+}
+
 export function updateProductPrices(pk, exchRates) {
-  const filePath = path.join(dataDir, pk, 'info.yml');
+  const filePath = path.join(productsDir, pk, 'info.yml');
   if (!fs.existsSync(filePath)) {
-    console.log(`File ${filePath} doesn't exist. Ignoring folder.`)
+    console.log(`File ${filePath} doesn't exist. Ignoring folder.`);
     return;
   }
 
@@ -147,29 +206,93 @@ export function updateProductPrices(pk, exchRates) {
 
       for (const currency of supportedCurrencies) {
         if (currency !== baseCurrency) {
-          productData.price[size][currency] = Math.floor(exchRates[currency] * baseSizePrice * 1.01 + 0.5) - 0.01;
+          productData.price[size][currency] = calculateConvertedPrice(baseSizePrice, exchRates[currency], productData.round_calculated_prices_to_99_cents);
         }
       }
     }
   } else {
     const basePrice = productData.price[baseCurrency];
     if (!basePrice) {
-      console.log(`Base price for product ${pk} doesn't exist.`)
+      console.log(`Base price for product ${pk} doesn't exist.`);
       return;
     }
 
     for (const currency of supportedCurrencies) {
       if (currency !== baseCurrency) {
-        productData.price[currency] = Math.floor(exchRates[currency] * basePrice * 1.01 + 0.5) - 0.01;
+        productData.price[currency] = calculateConvertedPrice(basePrice, exchRates[currency], productData.round_calculated_prices_to_99_cents);
       }
     }
   }
+
+  updaateProductCompareAtPrices(productData, exchRates);
+
   console.log(`Writing ${filePath}...`);
   writeYamlFile(filePath, productData);
 }
 
+function updaateProductCompareAtPrices(product, exchRates) {
+  const hasCompareAtConfig = product.compare_at_price_offset !== undefined || product.compare_at_price_ratio !== undefined || product.compare_at_price !== undefined;
+  if (!hasCompareAtConfig) {
+    return;
+  }
+
+  if (!product.compare_at_price) {
+    product.compare_at_price = {};
+  }
+
+  if (doesPriceDependOnSize(product)) {
+    for (const size of product.sizes) {
+      const basePrice = product.price[size][baseCurrency];
+
+      if (!product.compare_at_price[size]) {
+        product.compare_at_price[size] = {};
+      }
+
+      const existingBaseCompareAtPrice = product.compare_at_price[size][baseCurrency];
+      if (!existingBaseCompareAtPrice || existingBaseCompareAtPrice <= basePrice) {
+        const calculatedBaseCompareAtPrice = calculateCompareAtBasePrice(basePrice, product.compare_at_price_offset, product.compare_at_price_ratio);
+        if (calculatedBaseCompareAtPrice !== undefined) {
+          product.compare_at_price[size][baseCurrency] = calculatedBaseCompareAtPrice;
+        }
+      }
+
+      const compareAtBasePrice = product.compare_at_price[size][baseCurrency];
+      if (!compareAtBasePrice) {
+        continue;
+      }
+
+      for (const currency of supportedCurrencies) {
+        if (currency !== baseCurrency) {
+          product.compare_at_price[size][currency] = calculateConvertedPrice(compareAtBasePrice, exchRates[currency], product.round_calculated_prices_to_99_cents);
+        }
+      }
+    }
+  } else {
+    const basePrice = product.price[baseCurrency];
+
+    const existingBaseCompareAtPrice = product.compare_at_price[baseCurrency];
+    if (!existingBaseCompareAtPrice || existingBaseCompareAtPrice <= basePrice) {
+      const calculatedBaseCompareAtPrice = calculateCompareAtBasePrice(basePrice, product.compare_at_price_offset, product.compare_at_price_ratio);
+      if (calculatedBaseCompareAtPrice !== undefined) {
+        product.compare_at_price[baseCurrency] = calculatedBaseCompareAtPrice;
+      }
+    }
+
+    const compareAtBasePrice = product.compare_at_price[baseCurrency];
+    if (!compareAtBasePrice) {
+      return;
+    }
+
+    for (const currency of supportedCurrencies) {
+      if (currency !== baseCurrency) {
+        product.compare_at_price[currency] = calculateConvertedPrice(compareAtBasePrice, exchRates[currency], product.round_calculated_prices_to_99_cents);
+      }
+    }
+  }
+}
+
 export function getProductsWithStripePrices() {
-  const productDirs = fs.readdirSync(dataDir);
+  const productDirs = fs.readdirSync(productsDir);
 
   return productDirs.map((pk) => getProductWithStripePrices(pk)).filter(Boolean);
 }
@@ -183,7 +306,8 @@ export function getProductWithStripePrices(pk) {
 }
 
 function getStripePrices(pk) {
-  const filePath = path.join(dataDir, pk, 'stripe.yml');
+  const envSuffix = env === 'production' ? 'live' : 'test';
+  const filePath = path.join(productsDir, pk, `stripe_${envSuffix}.yml`);
   if (!fs.existsSync(filePath)) return {};
 
   const stripeData = yaml.load(fs.readFileSync(filePath, 'utf8'));
