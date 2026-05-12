@@ -17,7 +17,7 @@
     <script src="https://www.paypal.com/sdk/js?client-id=<%- site.paypalClientID %>&currency=USD"></script>
   <% } %>
   </head>
-  <%- site.googleTag %>
+  <%- site.googleAnalytics %>
   <body class="min-h-screen flex flex-col bg-slate-50 dark:bg-black dark:text-white">
   <% if (env && env !=='production' && env !== 'live') { %>
     <div class="fixed top-2 left-2 z-150">

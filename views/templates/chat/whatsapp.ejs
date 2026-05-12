@@ -1,0 +1,4 @@
+<a href="https://wa.me/<%- String(site.whatsAppNumber).replace(/\D/g, '') %>?text=<%- encodeURIComponent(site.defaultChatMessage ?? 'Hi! I have a question about your shop.') %>" target="_blank"
+  rel="noopener noreferrer" class="fixed bottom-6 right-6 z-50 transition hover:scale-110" aria-label="Chat on WhatsApp">
+  <img src="/img/chat/whatsapp.png" alt="WhatsApp Chat" class="h-16 w-16 drop-shadow-2xl hover:animate-bounce hidden md:block" />
+</a>

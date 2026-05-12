@@ -42,6 +42,7 @@ function loadAndMergeYaml(config, filename, options = {}) {
     }
     throw new Error(`File ${relativePath} doesn't exist.`);
   }
+  console.log(`Parsing ${filename}.yml…`);
   const loaded = yaml.load(fs.readFileSync(filePath, 'utf8'));
   Object.assign(config, loaded);
 }

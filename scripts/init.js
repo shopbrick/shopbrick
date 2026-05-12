@@ -54,6 +54,9 @@ async function ensureSecretsFile(filePath) {
   if (!fs.existsSync(filePath)) {
     const secrets = {
       exchangerateApiKey: 'YOUR-EXCHANGE-RATE-API-KEY',
+      whatsAppNumber: '',
+      telegramUsername: '',
+      defaultChatMessage: 'Hi! I have a question about your shop.',
     };
 
     const yamlData = yaml.dump(secrets);
@@ -71,7 +74,16 @@ async function ensureEnvSecretsFile(filePath, env = 'test') {
       stripeApiSecretKey: `sk_${env === 'test' ? 'test' : 'live'}_YOUR_SECRET_KEY`,
       paypalClientID: `YOUR_PAYPAL_${env === 'test' ? 'TEST' : 'PRODUCTION'}_CLIENT_ID`,
       paypalClientSecret: `YOUR_PAYPAL_${env === 'test' ? 'TEST' : 'PRODUCTION'}_CLIENT_SECRET`,
-      paypalAPI: env === 'test' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com'
+      paypalAPI: env === 'test' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com',
+      googleAnalytics: `<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XXXXXXXXXX');
+</script>`,
     };
 
     const yamlData = yaml.dump(envSecrets);

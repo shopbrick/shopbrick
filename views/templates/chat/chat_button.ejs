@@ -1,0 +1,7 @@
+<% if (site.whatsAppNumber && site.telegramUsername) { %>
+  <%- include('whatsapp_and_telegram') %>
+<% } else if (site.whatsAppNumber) { %>
+  <%- include('whatsapp') %>
+<% } else if (site.telegramUsername) { %>
+  <%- include('telegram') %>
+<% } %>

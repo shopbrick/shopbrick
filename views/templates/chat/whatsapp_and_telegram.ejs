@@ -1,0 +1,42 @@
+<div class="fixed bottom-6 right-6 z-50 hidden md:block">
+  <img id="chatToggle" src="/img/chat/chat.png" alt="Support Chat"
+    class="h-16 w-16 cursor-pointer drop-shadow-2xl transition hover:scale-110 hover:animate-bounce" />
+  <div id="chatMenu"
+    class="absolute bottom-20 right-0 hidden min-w-55 flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-4 shadow-2xl">
+  <% if (site.whatsAppNumber) { %>
+    <a href="https://wa.me/<%- String(site.whatsAppNumber).replace(/\D/g, '') %>?text=<%- encodeURIComponent(site.defaultChatMessage ?? 'Hi! I have a question about your shop.') %>"
+      target="_blank" rel="noopener noreferrer"
+      class="rounded-xl bg-green-500 px-4 py-3 text-center font-semibold text-white transition hover:scale-[1.03]">
+      WhatsApp
+    </a>
+  <% } %>
+
+  <% if (site.telegramUsername) { %>
+    <a href="https://t.me/<%- site.telegramUsername %>" target="_blank" rel="noopener noreferrer"
+      class="rounded-xl bg-sky-500 px-4 py-3 text-center font-semibold text-white transition hover:scale-[1.03]">
+      Telegram
+    </a>
+  <% } %>
+  </div>
+</div>
+
+<script>
+  const chatToggle = document.getElementById('chatToggle')
+  const chatMenu = document.getElementById('chatMenu')
+
+  chatToggle.addEventListener('click', () => {
+    chatMenu.classList.toggle('hidden')
+    chatMenu.classList.toggle('flex')
+  })
+
+  document.addEventListener('click', event => {
+    const isClickInside =
+      chatToggle.contains(event.target) ||
+      chatMenu.contains(event.target)
+
+    if (!isClickInside) {
+      chatMenu.classList.add('hidden')
+      chatMenu.classList.remove('flex')
+    }
+  })
+</script>
