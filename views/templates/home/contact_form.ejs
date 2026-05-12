@@ -3,7 +3,7 @@
 
 <section id="contact" class="widescreen:section-min-height tallscreen:section-min-height my-12 scroll-mt-16 p-6">
   <h2 class="mb-6 text-center text-4xl font-bold text-slate-900 sm:text-5xl dark:text-white">Contact Us</h2>
-  <form onsubmit="handleMailto(event)" class="max-4-xl items-left mx-auto flex flex-col gap-4 text-2xl sm:text-3xl">
+  <form onsubmit="handleContactFormSubmit(event)" class="max-4-xl items-left mx-auto flex flex-col gap-4 text-2xl sm:text-3xl">
     <label for="message">Message:</label>
     <textarea name="message" id="message" cols="30" rows="10" placeholder="Your Message" required class="w-full rounded-xl border border-solid border-slate-900 p-3 text-2xl text-black sm:text-3xl dark:border-none dark:bg-white"></textarea>
     <button class="dark:border:none w-48 rounded-xl border border-solid border-slate-900 bg-lime-500 p-3 text-white hover:bg-lime-600 active:bg-lime-400 cursor-pointer">Submit</button>
@@ -11,7 +11,7 @@
 </section>
 
 <script>
-function handleMailto(event) {
+function handleContactFormSubmit(event) {
   event.preventDefault();
   const message = encodeURIComponent(document.getElementById('message').value);
   window.open(
