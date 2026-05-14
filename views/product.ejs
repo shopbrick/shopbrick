@@ -67,8 +67,8 @@
       <% if (site.paypalClientID && !site.paypalClientID.startsWith('YOUR_PAYPAL')) { %>
         <%- include('templates/products/paypal_button') %>
       <% } %>
-        <%- include('templates/products/shipping_info_accordion') %>
-        <div>
+        <hr class="divider">
+        <div class="mt-4">
           <%- product.description %>
         </div>
         <%- include('templates/products/add_to_cart_buttons') %>
