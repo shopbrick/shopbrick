@@ -1,4 +1,5 @@
 const MAX_PRODUCT_COUNT = 10;
+const ACTIVE_COLOR_CLASSES = ['active', 'ring-4', 'ring-offset-2', 'ring-zinc-400'];
 let cart;
 let country;
 const imageIndex = {};
@@ -81,11 +82,20 @@ function validateAndSetProductQuntity(pk) {
 function selectColor(currentElement, pk) {
   const productColors = document.getElementsByClassName(`productColor-${pk}`);
   for (const element of productColors) {
-    element.classList.remove('active');
+    element.classList.remove(...ACTIVE_COLOR_CLASSES);
   }
-  currentElement.classList.add('active');
+  currentElement.classList.add(...ACTIVE_COLOR_CLASSES);
   imageIndex[pk] = 0;
   renderImage(pk);
+  renderThumbnails(pk);
+  selectColorLabel(pk, currentElement.dataset.value);
+}
+
+function selectColorLabel(pk, color) {
+  const label = document.getElementById(`selectedColorLabel-${pk}`);
+  if (label) {
+    label.textContent = color;
+  }
 }
 
 function selectSize(currentElement, pk) {
@@ -141,10 +151,12 @@ function restoreProductsQty() {
       if (item.color) {
         const productColors = document.getElementsByClassName(`productColor-${item.pk}`);
         for (const element of productColors) {
-          element.classList.remove('active');
+          element.classList.remove(...ACTIVE_COLOR_CLASSES);
         }
-        document.getElementById(`productColor-${item.pk}-${item.color}`)?.classList.add('active');
+        document.getElementById(`productColor-${item.pk}-${item.color}`)?.classList.add(...ACTIVE_COLOR_CLASSES);
         renderImage(item.pk);
+        renderThumbnails(item.pk);
+        selectColorLabel(item.pk, item.color);
       }
       if (item.size) {
         const productSizes = document.getElementsByClassName(`productSize-${item.pk}`);
@@ -482,6 +494,7 @@ function renderImage(pk) {
   const imgEl = document.getElementById(`carouselImage-${pk}`);
 
   imgEl.src = images[imageIndex[pk] ?? 0];
+  updateActiveThumbnail(pk);
 }
 
 function nextSlide(pk) {
@@ -496,4 +509,92 @@ function prevSlide(pk) {
 
   imageIndex[pk] = ((imageIndex[pk] ?? 0) - 1 + n) % n;
   renderImage(pk);
+}
+
+function selectSlide(pk, index) {
+  imageIndex[pk] = index;
+  renderImage(pk);
+}
+
+function updateActiveThumbnail(pk) {
+  const thumbs = document.getElementsByClassName(`carouselThumb-${pk}`);
+
+  for (const thumb of thumbs) {
+    thumb.classList.remove('border-blue-500', 'shadow-md');
+    thumb.classList.add('border-transparent', 'hover:border-gray-300');
+  }
+
+  const activeThumb = thumbs[imageIndex[pk] ?? 0];
+
+  if (activeThumb) {
+    activeThumb.classList.remove('border-transparent', 'hover:border-gray-300');
+
+    activeThumb.classList.add('border-blue-500', 'shadow-md');
+  }
+}
+
+function renderThumbnails(pk) {
+  const container = document.getElementById(`carouselThumbs-${pk}`);
+  if (!container) {
+    return;
+  }
+
+  const images = getProductVariantImages(pk);
+
+  container.innerHTML = images
+    .map((image, index) => `
+      <button
+        onclick="selectSlide('${pk}', ${index})"
+        class="
+          carouselThumb-${pk}
+          overflow-hidden
+          rounded-xl
+          border-2
+          transition
+          hover:scale-105
+          ${index === 0
+        ? 'border-blue-500'
+        : 'border-transparent'
+      }
+        "
+      >
+        <img
+          src="${image}"
+          class="h-18 w-18 object-cover"
+          alt="Thumbnail"
+        >
+      </button>
+    `)
+    .join('');
+}
+
+function initCarouselSwipe(pk) {
+  const carousel = document.getElementById(`carousel-${pk}`);
+
+  if (!carousel) {
+    return;
+  }
+
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  carousel.addEventListener('touchstart', event => {
+    touchStartX = event.changedTouches[0].screenX;
+  });
+
+  carousel.addEventListener('touchend', event => {
+    touchEndX = event.changedTouches[0].screenX;
+
+    const deltaX = touchEndX - touchStartX;
+
+    if (Math.abs(deltaX) < 40) {
+      return;
+    }
+
+    if (deltaX < 0) {
+      nextSlide(pk);
+    } else {
+      prevSlide(pk);
+    }
+  });
 }

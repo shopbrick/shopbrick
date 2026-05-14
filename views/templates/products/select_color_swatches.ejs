@@ -1,0 +1,37 @@
+<div class="mb-4">
+  <span class="font-bold text-gray-700 dark:text-gray-300">
+    Select Color:
+  </span>
+  <div class="mt-3 flex flex-wrap gap-3">
+    <% product.colors.forEach((color, index) => { %>
+      <button id="productColor-<%- product.pk %>-<%- color %>" onclick="selectColor(this, '<%- product.pk %>')"
+        data-value="<%- color %>" title="<%- color %>" aria-label="<%- color %>" class="
+          productColor-<%- product.pk %>
+          relative
+          h-10
+          w-10
+          rounded-full
+          border-2
+          transition
+          hover:scale-110
+          cursor-pointer
+          <% if (index === 0) { %>
+            ring-4 ring-offset-2 ring-zinc-400
+          <% } else { %>
+            border-zinc-300
+          <% } %>
+        " style="
+          background-color:
+          <%- product.colorHex[color] ?? '#d4d4d8' %>;
+        ">
+
+        <% if (color.toLowerCase() === 'white' ) { %>
+          <span class="absolute inset-0 rounded-full border border-zinc-300"></span>
+        <% } %>
+      </button>
+    <% }) %>
+  </div>
+  <p id="selectedColorLabel-<%- product.pk %>" class="mt-3 text-sm text-zinc-500">
+    <%- product.colors[0] %>
+  </p>
+</div>

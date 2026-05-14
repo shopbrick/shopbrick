@@ -43,9 +43,19 @@ export function convertDescriptionTxtToHtml(descriptionTxt, imageSrcs) {
     }
   };
 
-  for (let line of lines) {
+  let prevLine = '';
+
+  for (const [i, line] of lines.entries()) {
+    if (i === 0) {
+      htmlLines.push(`<h2 class="text-2xl font-bold text-heading">${line}</h2>`);
+    }
+
+    else if (line === '--') {
+      htmlLines.push('<hr class="divider">');
+    }
+
     // Section headings
-    if (/^(Features|Size|Note|Tips|Specifications):?/i.test(line) || line.length <= 15 && line.indexOf(':') === -1) {
+    else if (/^(Features|Size|Note|Tips|Specifications|In the Package):?/i.test(line) || line.length <= 15 && line.indexOf(':') === -1) {
       if (headingSeen) insertImage(); // Skip image before the first heading
       headingSeen = true;
 
@@ -54,17 +64,22 @@ export function convertDescriptionTxtToHtml(descriptionTxt, imageSrcs) {
         inList = false;
       }
 
-      htmlLines.push(`<h3 class="mt-4 text-xl font-semibold text-slate-800 dark:text-slate-300">${line}</h3>`);
+      htmlLines.push(`<h3 class="mt-4 text-xl font-semibold text-heading">${line}</h3>`);
     }
 
     // List items
     else if (/^\d+\.\s/.test(line)) {
       if (!inList) {
-        htmlLines.push('<ul class="list-disc list-inside mt-2 space-y-1">');
+        htmlLines.push('<ul class="space-y-2 text-gray-600 dark:text-gray-300">');
         inList = true;
       }
 
       htmlLines.push(`<li class="text-slate-700 dark:text-slate-400">${line.replace(/^\d+\.\s*/, '')}</li>`);
+    }
+
+    else if (prevLine === '--') {
+      htmlLines.push(`<h3 class="text-xl font-semibold text-gray-900 dark:text-white">${line}</h3>`);
+      insertImage();
     }
 
     // Paragraph lines with bold label
@@ -78,11 +93,13 @@ export function convertDescriptionTxtToHtml(descriptionTxt, imageSrcs) {
       if (line.length <= 50 && colonIndex !== -1 && colonIndex < line.length - 1) {
         const label = line.slice(0, colonIndex + 1);
         const value = line.slice(colonIndex + 1).trim();
-        htmlLines.push(`<p class="mt-2 text-lg text-slate-700 dark:text-slate-400">${label} <strong>${value}</strong></p>`);
+        htmlLines.push(`<p class="text-base text-body">${label} <strong>${value}</strong></p>`);
       } else {
-        htmlLines.push(`<p class="mt-2 text-lg text-slate-700 dark:text-slate-400">${line}</p>`);
+        htmlLines.push(`<p class="text-base text-body">${line}</p>`);
       }
     }
+
+    prevLine = line;
   }
 
   if (inList) {
@@ -94,5 +111,11 @@ export function convertDescriptionTxtToHtml(descriptionTxt, imageSrcs) {
     htmlLines.push(`<img src="${imageSrcs[imageIndex++]}" class="rounded-lg w-full shadow-md mt-4">`);
   }
 
-  return htmlLines.join('\n');
+  return '<div class="product-description space-y-4">' + htmlLines.join('\n') + '</div>';
+}
+
+export function lowercaseKeys(obj) {
+  return Object.fromEntries(
+    Object.entries(obj ?? {}).map(([key, value]) => [key.toLowerCase(), value])
+  );
 }

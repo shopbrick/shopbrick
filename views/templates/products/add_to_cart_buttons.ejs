@@ -1,4 +1,4 @@
-<% if (product.disabled) { %>
+<% if (product.disabled || product.out_of_stock) { %>
   <div class="w-full -mx-2 mb-1 px-2 pt-4">
     <button 
       class="w-full bg-gray-300 text-gray-500 py-3 px-4 rounded-full font-bold cursor-not-allowed">Add to Cart</button>

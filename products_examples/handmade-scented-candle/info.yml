@@ -1,12 +1,15 @@
 title: Handmade Scented Candle in Glass Jar
 branded: true
-sale: false
 featuring_product: true
+sale: false
+out_of_stock: false
+exclude_from_catalog: false
 colors:
   - White
   - Sandstone
   - Charcoal
+use_color_names_in_select: false
 price:
-  USD: 24.50
-compare_at_price_offset: 4
+  USD: 24.99
+compare_at_price_offset: 4.0
 round_calculated_prices_to_99_cents: true

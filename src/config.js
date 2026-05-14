@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import yaml from 'js-yaml';
+import {lowercaseKeys} from './utils.js';
 
 const defaultEncryptionKey = 'v8aNKRf7NaTT';
 
@@ -16,6 +17,8 @@ console.log(`Running in '${env}' environment.`);
 function getConfig() {
   console.log('Parsing config.yml…');
   const config = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'config.yml'), 'utf8'));
+  const colorHex = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'color_hex.yml'), 'utf8'));
+  config.colorHex = lowercaseKeys(colorHex);
 
   if (env.CONFIG) {
     env.CONFIG.split(',').map(name => name.trim()).forEach(name => {

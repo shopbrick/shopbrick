@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path, { normalize } from 'path';
 import yaml from 'js-yaml';
-import {writeYamlFile, convertDescriptionTxtToHtml} from './utils.js';
+import {writeYamlFile, convertDescriptionTxtToHtml, lowercaseKeys} from './utils.js';
 import config, {env} from './config.js';
 
 const {company, baseCurrency, supportedCurrencies} = config;
@@ -18,31 +18,34 @@ export function getProduct(pk) {
   if (!fs.existsSync(filePath)) return;
 
   const fileContent = fs.readFileSync(filePath, 'utf8');
-  const productData = yaml.load(fileContent);
-  const brandedTitle = `${company}™ ${productData.title}`;
-  const name = productData.branded && productData.title.indexOf('™') === -1 ? `${company}™ ${productData.title}` : productData.title;
-  const images = getProductImages(pk, 'main');
-  const imagesByColor = getProductImagesByColor(pk, productData.colors);
-  const description = getProductDescription(pk);
-  const reviews = getProductReviews(pk);
-  if (reviews.length > 0) {
-    productData.review_count ||= reviews.length;
-    productData.star_rating ||= Number(
-      (reviews.reduce((sum, r) => sum + (r.score || 0), 0) / reviews.length).toFixed(1)
+  const product = yaml.load(fileContent);
+  product.brandedTitle = `${company}™ ${product.title}`;
+  product.name = product.branded && product.title.indexOf('™') === -1 ? `${company}™ ${product.title}` : product.title;
+  product.images = getProductImages(pk, 'main');
+  product.imagesByColor = getProductImagesByColor(pk, product.colors);
+  product.description = getProductDescription(pk);
+  product.reviews = getProductReviews(pk);
+  if (product.reviews.length > 0) {
+    product.review_count ||= product.reviews.length;
+    product.star_rating ||= Number(
+      (product.reviews.reduce((sum, r) => sum + (r.score || 0), 0) / product.reviews.length).toFixed(1)
     );
   }
-
-  if (doesPriceDependOnSize(productData)) {
-    productData.isSizeBasedPrice = true;
-    productData.size = productData.sizes[0];
-    // productData.price = {...productData.price[productData.size], ...productData.price};
+  if (doesPriceDependOnSize(product)) {
+    product.isSizeBasedPrice = true;
+    product.size = product.sizes[0];
+    // product.price = {...product.price[product.size], ...product.price};  
+  }
+  if (product.colors) {
+    const colorHex = lowercaseKeys(product.color_hex); 
+    product.colorHex = Object.fromEntries(product.colors.map(color => [color, colorHex[color.toLowerCase()] ?? config.colorHex[color.toLowerCase()]]));
   }
 
-  return {handle: pk, pk, ...productData, brandedTitle, name, images, imagesByColor, description, reviews};
+  return {handle: pk, pk, ...product};
 }
 
-function doesPriceDependOnSize(productData) {
-  return !(baseCurrency in productData.price) && Array.isArray(productData.sizes) && productData.sizes[0] && productData.price[productData.sizes[0]][baseCurrency];
+function doesPriceDependOnSize(product) {
+  return !(baseCurrency in product.price) && Array.isArray(product.sizes) && product.sizes[0] && product.price[product.sizes[0]][baseCurrency];
 }
 
 const imageExtensions = /\.(png|jpe?g|webp|gif|bmp|svg)$/i;

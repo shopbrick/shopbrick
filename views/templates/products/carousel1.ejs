@@ -1,13 +1,93 @@
-<div class="relative w-full h-[400px] overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center">
-  <img id="carouselImage-<%- product.pk %>" class="max-h-full object-contain" src="<%- product.images[0] %>" alt="Product image">
+<div id="carousel-<%- product.pk %>" class="
+    relative
+    aspect-square
+    w-full
+    max-w-162.5
+    overflow-hidden
+    rounded-2xl
+    bg-zinc-100
+    dark:bg-zinc-900
+    touch-pan-y
+  ">
+
+  <!-- Main Image -->
+  <img id="carouselImage-<%- product.pk %>" class="
+      h-full
+      w-full
+      object-cover
+      transition
+      duration-300
+      hover:scale-[1.02]
+      select-none
+    " draggable="false"
+    src="<%- Array.isArray(product.colors) && product.colors.length > 0 && product.imagesByColor[product.colors[0]].length > 0 ? product.imagesByColor[product.colors[0]][0] : product.images[0] %>"
+    alt="Product image">
 
   <!-- Prev -->
-  <button onclick="prevSlide('<%- product.pk %>')" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 px-3 py-1 rounded-full">
+  <button onclick="prevSlide('<%- product.pk %>')" class="
+      absolute
+      left-3
+      top-1/2
+      -translate-y-1/2
+      rounded-full
+      bg-white/80
+      px-4
+      py-2
+      text-xl
+      shadow-lg
+      backdrop-blur
+      transition
+      hover:scale-110
+    ">
     ‹
   </button>
 
   <!-- Next -->
-  <button onclick="nextSlide('<%- product.pk %>')" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 px-3 py-1 rounded-full">
+  <button onclick="nextSlide('<%- product.pk %>')" class="
+      absolute
+      right-3
+      top-1/2
+      -translate-y-1/2
+      rounded-full
+      bg-white/80
+      px-4
+      py-2
+      text-xl
+      shadow-lg
+      backdrop-blur
+      transition
+      hover:scale-110
+    ">
     ›
   </button>
+
+</div>
+
+<!-- Thumbnails -->
+<div id="carouselThumbs-<%- product.pk %>" class="mt-4 flex flex-wrap gap-3 p-1 pb-2 overflow-x-auto">
+  <% const initialImages=Array.isArray(product.colors) && product.colors.length> 0 &&
+    product.imagesByColor[product.colors[0]]?.length > 0
+    ? product.imagesByColor[product.colors[0]]
+    : product.images;
+  %>
+
+  <% initialImages.forEach((image, index)=> { %>
+    <button onclick="selectSlide('<%- product.pk %>', <%- index %>)" class="
+      carouselThumb-<%- product.pk %>
+      overflow-hidden
+      rounded-xl
+      border-2
+      transition
+      duration-200
+      md:hover:scale-105
+      <% if (index === 0) { %>
+        border-blue-500 shadow-md
+      <% } else { %>
+        border-transparent hover:border-gray-300
+      <% } %>
+    ">
+      <img src="<%- image %>" class="h-18 w-18 object-cover" alt="Thumbnail">
+    </button>
+
+  <% }) %>
 </div>

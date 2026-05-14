@@ -4,13 +4,12 @@
   <div id="errorsSection"></div>
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row -mx-4">
-      <div class="md:w-1/2 md:min-w-125 px-4">
-        <div class="h-115 rounded-lg mb-2">
+      <div class="w-full lg:w-[55%] px-4">
+        <div class="rounded-lg mb-6">
           <%- include('carousel1') %>
         </div>
-        <%- include('add_to_cart_buttons_small') %>
       </div>
-      <div class="flex-1 min-w-0 px-4">
+      <div class="w-full lg:w-[45%] px-4">
         <a href="/products/<%- product.pk %>.html">
           <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2"><%- product.branded ? site.company + '&trade; ' : '' %><%= product.title %></h1>
         </a>
@@ -23,8 +22,10 @@
             <span class="line-through text-lg text-red-500 mr-1 productOldPrice" data-pk="<%- product.pk %>"><%= formatCurrency(getProductCompareAtPrice(product)) %></span>
             <% } %>
             <span class="font-bold text-xl productPrice" data-pk="<%- product.pk %>"><%= formatCurrency(getProductPrice(product)) %></span>
-            <% if (product.sale) { %>
-            <span class="bg-red-700 text-white rounded-full px-3 py-0.5 ml-1">Sale</span>
+            <% if (product.out_of_stock) { %>
+              <span class="bg-zinc-400 text-gray-800 rounded-full px-3 py-0.5 ml-1 text-sm">Out of Stock</span>
+            <% } else if (product.sale) { %>
+              <span class="bg-red-700 text-white rounded-full px-3 py-0.5 ml-1">Sale</span>
             <% } %>
           </p>
           <p class="text-sm mt-1 text-gray-500">Tax included. Free <a href="/policies/shipping-policy.html" class="underline" target="_blank">Shipping</a>.</p>
@@ -32,8 +33,11 @@
         <% if (product.sizes) { %>
           <%- include('select_size') %>
         <% } %>
-        <% if (product.colors) { %>
+        <% if (product.colors && product.use_color_names_in_select) { %>
           <%- include('select_color') %>
+        <% } %>
+        <% if (product.colors && !product.use_color_names_in_select) { %>
+          <%- include('select_color_swatches') %>
         <% } %>
         <div class="mb-4">
           <label for="quantity-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity:</label>
@@ -54,12 +58,12 @@
               </svg>
             </button>
           </div>
-          <% if (!product.disabled) { %>
+          <% if (!product.disabled && !product.out_of_stock) { %>
             <p class="urgencyMsg mt-2 text-sm text-gray-500 dark:text-gray-400"></p>
           <% } %>
         </div>
         <%- include('add_to_cart_buttons') %>
-        <% if (product.disabled) { %>
+        <% if (product.disabled || product.out_of_stock) { %>
         <script>products['<%- product.pk %>'] = <%- JSON.stringify({price: product.price, compareAtPrice: product.compare_at_price, isSizeBasedPrice: product.isSizeBasedPrice, size: product.size}) %>;</script>
         <% } else { %>
         <script>products['<%- product.pk %>'] = <%- JSON.stringify({title: product.title, images: product.images, imagesByColor: product.imagesByColor, colors: product.colors, price: product.price, compareAtPrice: product.compare_at_price, stripePrices: encryptValues(product.stripePrices, site.encryptionKey), isSizeBasedPrice: product.isSizeBasedPrice, size: product.size}) %>;</script>
@@ -68,3 +72,8 @@
     </div>
   </div>
 </section>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initCarouselSwipe('<%- product.pk %>');
+  });
+</script>

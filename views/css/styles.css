@@ -20,6 +20,36 @@
   }
 }
 
+@layer components {
+  .text-body {
+    @apply text-gray-600 dark:text-gray-300;
+  }
+
+  .text-heading {
+    @apply text-gray-900 dark:text-white;
+  }
+
+  .text-muted {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  .card {
+    @apply bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl;
+  }
+
+  .card-dark {
+    @apply bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl;
+  }
+
+  .divider {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+
+  .product-description {
+    @apply max-w-2xl mx-auto leading-relaxed space-y-6 text-gray-700 dark:text-gray-200;
+  }
+}
+
 .active {
   @apply bg-gray-700 dark:bg-gray-500 text-white ring-2 ring-gray-900 dark:ring-gray-300 cursor-auto;
 }
