@@ -30,5 +30,40 @@ testimonials:
 defaultCountry: US
 currencyUnit: USD
 locale: en-US
-supportedCurrencies: [USD, GBP]
-supportedCountries: [UA, PL, GB, US]
+supportedCurrencies: [USD, GBP, EUR]
+# supportedCurrencies: [USD, GBP, EUR, AUD, CAD, NZD, PLN, UAH, BGN, CZK, DKK, HUF, NOK, RON, SEK]
+supportedCountries: [
+  AU, # Australia
+  AT, # Austria
+  BE, # Belgium
+  BG, # Bulgaria
+  CA, # Canada
+  HR, # Croatia
+  CY, # Cyprus
+  CZ, # Czechia
+  DK, # Denmark
+  EE, # Estonia
+  FI, # Finland
+  FR, # France
+  DE, # Germany
+  GR, # Greece
+  HU, # Hungary
+  IE, # Ireland
+  IT, # Italy
+  LV, # Latvia
+  LT, # Lithuania
+  LU, # Luxembourg
+  MT, # Malta
+  NL, # Netherlands
+  NZ, # New Zealand
+  PL, # Poland
+  PT, # Portugal
+  RO, # Romania
+  SK, # Slovakia
+  SI, # Slovenia
+  ES, # Spain
+  SE, # Sweden
+  UA, # Ukraine
+  GB, # United Kingdom
+  US, # United States
+]
