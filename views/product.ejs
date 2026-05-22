@@ -76,11 +76,7 @@
     </div>
   </div>
 </section>
-<% if (product.disabled || product.out_of_stock) { %>
-<script>products['<%- product.pk %>'] = <%- JSON.stringify({title: product.title, images: product.images, imagesByColor: product.imagesByColor, colors: product.colors, price: product.price, compareAtPrice: product.compare_at_price, isSizeBasedPrice: product.isSizeBasedPrice, size: product.size}) %>;</script>
-<% } else { %>
-<script>products['<%- product.pk %>'] = <%- JSON.stringify({title: product.title, images: product.images, imagesByColor: product.imagesByColor, colors: product.colors, price: product.price, compareAtPrice: product.compare_at_price, stripePrices: encryptValues(product.stripePrices, site.encryptionKey), isSizeBasedPrice: product.isSizeBasedPrice, size: product.size}) %>;</script>
-<% } %>
+<%- serializeProduct(product) %>
 <% if (product.reviews.length > 0) { %>
 <%- include('templates/products/reviews') %>
 <% } %>

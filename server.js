@@ -1,10 +1,10 @@
 import express from 'express';
 import {join} from 'path';
 import fs from 'fs-extra';
-import {productsDir, getProductWithStripePrices, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice} from './src/products.js';
+import {productsDir, getProductWithStripePrices, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct} from './src/products.js';
 import config from './src/config.js';
 import {getBlogs} from './src/blogs.js';
-import {indexBy, encryptValues} from './src/utils.js';
+import {indexBy} from './src/utils.js';
 import countries from './src/countries.js';
 import currencies from './src/currencies.js';
 
@@ -19,13 +19,13 @@ app.use((_req, res, next) => {
   res.locals.env = process.env.ENV;
   res.locals.getProductPrice = getProductPrice;
   res.locals.getProductCompareAtPrice = getProductCompareAtPrice;
+  res.locals.serializeProduct = serializeProduct;
   res.locals.site = config;
   res.locals.hasBlogs = blogs.length > 0;
   res.locals.hasTestimonials = Array.isArray(config.testimonials) && config.testimonials.length > 0;
   res.locals.formatCurrency = config.formatCurrency;
   res.locals.countries = countries;
   res.locals.currencies = currencies;
-  res.locals.encryptValues = encryptValues;
   next();
 });
 

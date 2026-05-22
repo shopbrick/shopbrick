@@ -36,16 +36,17 @@ async function copyDirectory(src, dest) {
 }
 
 async function copyFile(src, dest) {
+  const relativeSrc = path.relative(process.cwd(), src);
+  const relativeDest = path.relative(process.cwd(), dest);
   try {
     if (!fs.existsSync(dest)) {
       await fsp.copyFile(src, dest);
-      console.log(`Copied ${src} to ${dest}`);
+      console.log(`Copied ${relativeSrc} to ${relativeDest}`);
     } else {
-      const relativeDest = path.relative(process.cwd(), dest);
       console.log(`File '${relativeDest}' already exists. Skipping.`);
     }
   } catch (err) {
-    console.error(`Failed to copy ${src}:`, err);
+    console.error(`Failed to copy ${relativeSrc}:`, err);
     throw err;
   }
 }
@@ -53,6 +54,7 @@ async function copyFile(src, dest) {
 async function ensureSecretsFile(filePath) {
   if (!fs.existsSync(filePath)) {
     const secrets = {
+      encryptionKey: Math.random().toString(16).slice(2, 14),
       exchangerateApiKey: 'YOUR-EXCHANGE-RATE-API-KEY',
       whatsAppNumber: '',
       telegramUsername: '',
