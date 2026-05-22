@@ -325,19 +325,21 @@ function getStripePrices(pk) {
   return res;
 }
 
-export function serializeProduct(product) {
+export function serializeProduct(product, opts = {}) {
   const serialized = {
-    title: product.title,
-    images: product.images,
-    imagesByColor: product.imagesByColor,
-    colors: product.colors,
     price: product.price,
     compareAtPrice: product.compare_at_price,
     isSizeBasedPrice: product.isSizeBasedPrice,
     size: product.size,
   };
-  if (!product.disabled && !product.out_of_stock) {
-    serialized.stripePrices = encryptValues(product.stripePrices, config.encryptionKey);
+  if (!opts.inCatalog) {
+    serialized.title = product.title;
+    serialized.images = product.images;
+    serialized.imagesByColor = product.imagesByColor;
+    serialized.colors = product.colors;
+    if (!product.disabled && !product.out_of_stock) {
+      serialized.stripePrices = encryptValues(product.stripePrices, config.encryptionKey);
+    }
   }
   return `<script>products['${product.pk}'] = ${JSON.stringify(serialized)};</script>`;
 }

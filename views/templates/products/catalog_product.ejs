@@ -24,6 +24,6 @@
     </div>
   </a>
 </div>
-<% if (!product.featuring_product) { %>
-<script>products['<%- product.pk %>'] = <%- JSON.stringify({price: product.price, compareAtPrice: product.compare_at_price, isSizeBasedPrice: product.isSizeBasedPrice, size: product.size}) %>;</script>
+<% if (!product.featuring_product || !isHomePage) { %>
+<%- serializeProduct(product, {inCatalog: true}) %>
 <% } %>
