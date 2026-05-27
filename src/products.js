@@ -186,11 +186,23 @@ function calculateCompareAtBasePrice(basePrice, compareAtPriceOffset, compareAtP
   return undefined;
 }
 
-function calculateConvertedPrice(value, exchangeRate, roundCalculatedPricesTo99Cents) {
-  if (roundCalculatedPricesTo99Cents) {
-    return Math.floor(exchangeRate * value * 1.01 + 0.5) - 0.01;
+function calculateConvertedPrice(value, exchangeRate, roundingCents = []) {
+  const converted = exchangeRate * value;
+  if (!roundingCents.length) {
+    return roundPrice(converted);
   }
-  return roundPrice(exchangeRate * value);
+
+  const roundedBase = Math.floor(converted);
+
+  // find nearest preferred cents
+  const bestCents = roundingCents.reduce((best, cents) => {
+    return Math.abs((roundedBase + cents / 100) - converted)
+      < Math.abs((roundedBase + best / 100) - converted)
+      ? cents
+      : best;
+  });
+
+  return roundPrice(roundedBase + bestCents / 100);
 }
 
 export function updateProductPrices(pk, exchRates) {
@@ -209,7 +221,7 @@ export function updateProductPrices(pk, exchRates) {
 
       for (const currency of supportedCurrencies) {
         if (currency !== baseCurrency) {
-          productData.price[size][currency] = calculateConvertedPrice(baseSizePrice, exchRates[currency], productData.round_calculated_prices_to_99_cents);
+          productData.price[size][currency] = calculateConvertedPrice(baseSizePrice, exchRates[currency], productData.price_rounding_cents);
         }
       }
     }
@@ -222,14 +234,15 @@ export function updateProductPrices(pk, exchRates) {
 
     for (const currency of supportedCurrencies) {
       if (currency !== baseCurrency) {
-        productData.price[currency] = calculateConvertedPrice(basePrice, exchRates[currency], productData.round_calculated_prices_to_99_cents);
+        productData.price[currency] = calculateConvertedPrice(basePrice, exchRates[currency], productData.price_rounding_cents);
       }
     }
   }
 
   updaateProductCompareAtPrices(productData, exchRates);
 
-  console.log(`Writing ${filePath}...`);
+  const relativePath = path.relative(process.cwd(), filePath);
+  console.log(`Writing ${relativePath}…`);
   writeYamlFile(filePath, productData);
 }
 
@@ -266,7 +279,7 @@ function updaateProductCompareAtPrices(product, exchRates) {
 
       for (const currency of supportedCurrencies) {
         if (currency !== baseCurrency) {
-          product.compare_at_price[size][currency] = calculateConvertedPrice(compareAtBasePrice, exchRates[currency], product.round_calculated_prices_to_99_cents);
+          product.compare_at_price[size][currency] = calculateConvertedPrice(compareAtBasePrice, exchRates[currency], product.price_rounding_cents);
         }
       }
     }
@@ -288,7 +301,7 @@ function updaateProductCompareAtPrices(product, exchRates) {
 
     for (const currency of supportedCurrencies) {
       if (currency !== baseCurrency) {
-        product.compare_at_price[currency] = calculateConvertedPrice(compareAtBasePrice, exchRates[currency], product.round_calculated_prices_to_99_cents);
+        product.compare_at_price[currency] = calculateConvertedPrice(compareAtBasePrice, exchRates[currency], product.price_rounding_cents);
       }
     }
   }

@@ -31,7 +31,7 @@ defaultCountry: US
 currencyUnit: USD
 locale: en-US
 supportedCurrencies: [USD, GBP, EUR]
-# supportedCurrencies: [USD, GBP, EUR, AUD, CAD, NZD, PLN, UAH, BGN, CZK, DKK, HUF, NOK, RON, SEK]
+# supportedCurrencies: [USD, GBP, EUR, AUD, CAD, NZD, PLN, UAH, CZK, DKK, HUF, NOK, RON, SEK]
 supportedCountries: [
   AU, # Australia
   AT, # Austria

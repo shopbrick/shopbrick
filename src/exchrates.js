@@ -9,7 +9,8 @@ async function fetchExchangeRates(apiKey, baseCurrency) {
   const filePath = path.join(process.cwd(), 'src', 'exchrates', fileName);
 
   if (fs.existsSync(filePath)) {
-    console.log(`Using exchange rates from existing file: ${filePath}`)
+    const relativePath = path.relative(process.cwd(), filePath);
+    console.log(`Using exchange rates from existing file: ${relativePath}`)
     const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     return data.conversion_rates;
   }
@@ -22,7 +23,8 @@ async function fetchExchangeRates(apiKey, baseCurrency) {
     if (data.result === 'success') {
       const output = JSON.stringify(data, null, 2);
       fs.writeFileSync(filePath, output);
-      console.log(`Exchange rates have been saved to ${filePath}`);
+      const relativePath = path.relative(process.cwd(), filePath);
+      console.log(`Exchange rates have been saved to ${relativePath}`);
       return data.conversion_rates;
     } else {
       console.error('Failed to fetch exchange rates:', data['error-type']);

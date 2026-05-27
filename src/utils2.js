@@ -31,7 +31,8 @@ export function copyProductImages(buildFolder, pk, folder) {
   const destDir = path.join(buildDir, 'img', 'products', pk, folder);
 
   if (!fs.existsSync(srcDir)) {
-    console.error('Source directory does not exist:', srcDir);
+    // const relativeSrc = path.relative(process.cwd(), srcDir);
+    // console.error('Source directory does not exist:', relativeSrc);
     return;
   }
   fs.mkdirSync(destDir, {recursive: true});

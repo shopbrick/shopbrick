@@ -40,7 +40,7 @@ async function checkProductStripePricesAreActive(product, stripe) {
       console.log('stripePrice.unit_amount', stripePrice.unit_amount);
 
       if (!stripePrice.active && unitAmount === stripePrice.unit_amount) {
-        console.log('Stripe price is Archived AND Correct. Unarchiving....');
+        console.log('Stripe price is Archived AND Correct. Unarchiving…');
         await stripe.prices.update(stripePrice.id, {active: true});
       }
     }

@@ -23,4 +23,4 @@ price:
   Large:
     USD: 25.99
 compare_at_price_offset: 4.0
-round_calculated_prices_to_99_cents: true
+price_rounding_cents: [49, 99]

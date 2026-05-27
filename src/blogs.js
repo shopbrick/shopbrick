@@ -53,14 +53,14 @@ function parseBlogFile(fileContent) {
       if (line.startsWith('/products/') && line.endsWith('.html')) {
         const match = line.match(/^\/products\/([^/]+)\.html$/);
         if (!match) {
-          throw new Error(`Invalid product link format: ${line} in blog post: ${fileContent.slice(0, 100)}...`);
+          throw new Error(`Invalid product link format: ${line} in blog post: ${fileContent.slice(0, 100)}…`);
         }
       
         const pk = match[1];
         const product = getProduct(pk);
       
         if (!product) {
-          throw new Error(`Product not found: "${pk}" linked in blog post: ${fileContent.slice(0, 100)}...`);
+          throw new Error(`Product not found: "${pk}" linked in blog post: ${fileContent.slice(0, 100)}…`);
         }
       
         const productName = product.title || pk;
