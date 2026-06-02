@@ -77,9 +77,8 @@
   </div>
 </section>
 <%- serializeProduct(product) %>
-<% if (product.reviews.length > 0) { %>
+<%- include('templates/products/related_products') %>
 <%- include('templates/products/reviews') %>
-<% } %>
 <%- include('templates/footer') %>
 <script>
   document.addEventListener('DOMContentLoaded', () => {

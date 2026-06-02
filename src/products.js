@@ -13,6 +13,10 @@ export function getProducts() {
   return productDirs.map((pk) => getProduct(pk)).filter(Boolean);
 }
 
+export function getProductsObject() {
+  return Object.fromEntries(getProducts().map((product) => [product.pk, product]));
+}
+
 export function getProduct(pk) {
   const filePath = path.join(productsDir, pk, 'info.yml');
   if (!fs.existsSync(filePath)) return;

@@ -4,7 +4,7 @@ import fs from 'fs';
 import fsExtra from 'fs-extra';
 import ejs from 'ejs';
 import config, {env} from '../src/config.js';
-import {getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct} from '../src/products.js';
+import {getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct, getProductsObject} from '../src/products.js';
 import {getBlogs} from '../src/blogs.js';
 import {copyDirSync, copyProductImages, minifyHTML, uglifyJSfile} from '../src/utils2.js';
 import countries from '../src/countries.js';
@@ -20,6 +20,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(process.cwd(), 'views'));
 
 const products = getProductsWithStripePrices();
+const productsObj = getProductsObject();
 const featuredProducts = products.filter((p) => p.featuring_product);
 const policies = ['privacy-policy', 'refund-policy', 'shipping-policy', 'terms-of-service'];
 const blogs = getBlogs();
@@ -78,7 +79,7 @@ async function generateStaticSite() {
     copyProductImages(buildFolder, product.pk, 'description');
 
     const filePath = path.join(productsDir, `${product.pk}.html`);
-    const content = await ejs.renderFile('views/product.ejs', {...locals, product});
+    const content = await ejs.renderFile('views/product.ejs', {...locals, product, products: productsObj});
     fs.writeFileSync(filePath, await minifyHTML(content), 'utf-8');
     console.log(`🌐 Generated: ./${buildFolder}/products/${product.pk}.html`);
   }

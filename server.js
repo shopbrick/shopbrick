@@ -1,7 +1,7 @@
 import express from 'express';
 import {join} from 'path';
 import fs from 'fs-extra';
-import {productsDir, getProductWithStripePrices, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct} from './src/products.js';
+import {productsDir, getProductWithStripePrices, getProductsObject, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct} from './src/products.js';
 import config from './src/config.js';
 import {getBlogs} from './src/blogs.js';
 import {indexBy} from './src/utils.js';
@@ -60,7 +60,11 @@ app.get('/products/:handle.html', (req, res) => {
   const product = getProductWithStripePrices(handle);
 
   if (product) {
-    res.render('product', {product});
+    let products;
+    if (product.related_products?.length) {
+      products = getProductsObject();
+    }
+    res.render('product', {product, products});
   } else {
     res.status(404).send('Page not found');
   }

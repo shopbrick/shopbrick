@@ -1,0 +1,45 @@
+<% if (product.related_products?.length) { %>
+  <section class="mt-12 mb-6">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-2xl font-bold text-gray-900">
+        Related products
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <% product.related_products.forEach((relatedProductKey) => { %>
+        <% const relatedProduct = products[relatedProductKey] %>
+
+        <% if (relatedProduct) { %>
+          <%- serializeProduct(relatedProduct) %>
+          <a href="/products/<%= relatedProductKey %>.html"
+            class="group block overflow-hidden rounded-2xl border border-gray-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
+            <div class="aspect-square overflow-hidden bg-gray-100">
+              <img src="<%= relatedProduct.images?.[0] || '/img/no-image.webp' %>" alt="<%= relatedProduct.title %>"
+                class="h-full w-full object-cover transition duration-300 group-hover:scale-105" loading="lazy" />
+            </div>
+
+            <div class="space-y-2 p-4">
+              <h3 class="line-clamp-2 text-sm font-medium text-gray-900">
+                <%= relatedProduct.title %>
+              </h3>
+
+              <div class="flex items-center gap-2">
+                <span class="text-base font-semibold text-gray-900 productPrice" data-pk="<%- relatedProductKey %>">
+                  <%= formatCurrency(getProductPrice(relatedProduct)) %>
+                </span>
+              
+                <% if (relatedProduct.compare_at_price) { %>
+                  <span class="text-sm text-red-500 line-through productOldPrice" data-pk="<%- relatedProductKey %>">
+                    <%= formatCurrency(getProductCompareAtPrice(relatedProduct)) %>
+                  </span>
+                  <% } %>
+              </div>
+
+            </div>
+          </a>
+        <% } %>
+      <% }) %>
+    </div>
+  </section>
+<% } %>
