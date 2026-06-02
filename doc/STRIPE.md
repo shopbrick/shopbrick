@@ -62,6 +62,23 @@ Make sure to match colors, logo, and accent styles to your config.
 
 ---
 
+## Stripe Domain Registration
+
+Stripe Checkout requires your production domain to be registered.
+
+If payment link does not work and you see (in the browser dev console):
+
+"The domain (https://yourdomain.com/) that redirected to Checkout is not enabled
+in the dashboard. Add this domain at https://dashboard.stripe.com/account/checkout/settings."
+
+open:
+
+https://dashboard.stripe.com/settings/checkout
+
+and add your domain into CLIENT-ONLY INTEGRATION section.
+
+---
+
 ## 🛠 Development Tips
 
 - Use `npm run stripe` to export your local ShopBrick products into Stripe.
