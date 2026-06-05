@@ -1,5 +1,7 @@
 const MAX_PRODUCT_COUNT = 10;
 const ACTIVE_COLOR_CLASSES = ['active', 'ring-4', 'ring-offset-2', 'ring-zinc-400'];
+const PAYPAL_ZERO_DECIMAL_CURRENCIES = ['HUF', 'JPY', 'KRW'];
+const PAYPAL_NOT_SUPPORTED_CURRENCIES = ['BGN', 'UAH', 'AED'];
 let cart;
 let country;
 const imageIndex = {};
@@ -169,13 +171,13 @@ function restoreProductsQty() {
   }
 }
 
-function initCart() {
+async function initCart() {
   loadCart();
   restoreProductsQty();
   country = JSON.parse(localStorage.getItem('country')) || getCountryCode();
   selectCountry(country);
   currency = JSON.parse(localStorage.getItem('currency')) || getCurrencyFromLocale();
-  selectCurrency(currency);
+  await selectCurrency(currency);
   urgencyMessage();
 };
 
@@ -336,7 +338,7 @@ function saveCountry() {
   localStorage.setItem('country', JSON.stringify(country));
 }
 
-function selectCurrency(curr) {
+async function selectCurrency(curr) {
   currency = curr;
   const currencySelectors = document.getElementsByClassName('currencySelect');
   for (const currencySelect of currencySelectors) {
@@ -345,6 +347,7 @@ function selectCurrency(curr) {
   displayCart();
   saveCurrency();
   updateAllProductsPrices();
+  await renderPayPalButtons();
 }
 
 function updateAllProductsPrices() {
@@ -597,4 +600,91 @@ function initCarouselSwipe(pk) {
       prevSlide(pk);
     }
   });
+}
+
+function reloadPayPalSDK() {
+  return new Promise((resolve, reject) => {
+    const oldScript = document.getElementById('paypalSDK');
+    if (oldScript) {
+      oldScript.remove();
+    }
+
+    setTimeout(() => {
+      const script = document.createElement('script');
+      script.id = 'paypalSDK';
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientID}&currency=${currency}`;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    }, 50);
+  });
+}
+
+function renderProductPayPalButton(pk) {
+  const containerId = `paypalButtonContainer-${pk}`;
+
+  paypal.Buttons({
+    createOrder: function (data, actions) {
+      const productName = products[pk].title;
+      const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
+      const size = document.querySelector(`.productSize-${pk}.active`)?.getAttribute('data-value');
+      const productVariantName = [productName, color, size].filter(Boolean).join(' / ');
+      const itemQty = getProductQty(pk);
+      let productPrice = getProductPrice(pk);
+      if (PAYPAL_ZERO_DECIMAL_CURRENCIES.includes(currency)) {
+        productPrice = Math.ceil(productPrice);
+      }
+      const totalPrice = (productPrice * itemQty).toFixed(2);
+
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: totalPrice,
+            currency_code: currency,
+            breakdown: {
+              item_total: {
+                value: totalPrice,
+                currency_code: currency
+              }
+            }
+          },
+          description: productVariantName,
+          items: [{
+            name: productVariantName,
+            unit_amount: {
+              value: productPrice,
+              currency_code: currency
+            },
+            quantity: itemQty
+          }]
+        }]
+      });
+    },
+    onApprove: function (data, actions) {
+      return actions.order.capture().then(function (details) {
+        window.location.assign(`${window.location.origin}/success.html?hsh=5HkxGr80yCFm&poid=${details.id}&t=${Date.now() + 90000000}`);
+      });
+    }
+  }).render(`#${containerId}`);
+}
+
+async function renderPayPalButtons() {
+  const containers = document.getElementsByClassName('paypalButtonContainer');
+  for (const container of containers) {
+    container.innerHTML = '';
+  }
+  const isSupported = paypalClientID && containers.length > 0 && !PAYPAL_NOT_SUPPORTED_CURRENCIES.includes(currency);
+  if (!isSupported) {
+    return;
+  }
+
+  await reloadPayPalSDK();
+
+  if (!window.paypal?.Buttons) {
+    console.error('PayPal SDK failed to initialize');
+    return;
+  }
+  for (const container of containers) {
+    renderProductPayPalButton(container.dataset.pk);
+  }
 }

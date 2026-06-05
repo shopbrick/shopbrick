@@ -20,6 +20,7 @@ const currencies = [
   {"currency": "KRW", "symbol": "₩"},
   {"currency": "SEK", "symbol": "kr"},
   {"currency": "CHF", "symbol": "CHF"},
+  {"currency": "UAH", "symbol": "₴"},
   {"currency": "AED", "symbol": "د.إ"},
   {"currency": "GBP", "symbol": "£"},
   {"currency": "USD", "symbol": "$"}

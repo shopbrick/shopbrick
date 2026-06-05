@@ -1,5 +1,6 @@
 .DS_Store
 node_modules/
+admin/shipped-orders.json
 build/
 build_test/
 config/secrets.yml

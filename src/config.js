@@ -32,6 +32,9 @@ function getConfig() {
   config.formatCurrency = (number) =>
     new Intl.NumberFormat(config.locale, { style: 'currency', currency: config.baseCurrency }).format(number);
   config.encryptionKey ||= defaultEncryptionKey;
+  if (config.paypalClientID?.startsWith('YOUR_PAYPAL')) {
+    config.paypalClientID = '';
+  }
   return config;
 }
 

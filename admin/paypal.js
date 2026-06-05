@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import fs from 'fs/promises';
-import cfg from '../config.js';
+import cfg from '../src/config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();

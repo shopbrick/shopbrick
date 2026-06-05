@@ -64,9 +64,7 @@
             <img class="mx-auto rounded-sm" src="/img/paymentcard.png" alt="Payment card methods" />
           </div>
         </div>
-      <% if (site.paypalClientID && !site.paypalClientID.startsWith('YOUR_PAYPAL')) { %>
         <%- include('templates/products/paypal_button') %>
-      <% } %>
         <hr class="divider">
         <div class="mt-4">
           <%- product.description %>
