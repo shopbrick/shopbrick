@@ -1,3 +1,18 @@
+<%
+function productThumbUrl(url) {
+  return url
+    .replace(`/img/products/${product.pk}/`, `/img/products/${product.pk}/thumb/`)
+    .replace(/\.(jpg|jpeg|png)$/i, '.webp');
+}
+
+const initialImages =
+  Array.isArray(product.colors) &&
+  product.colors.length > 0 &&
+  product.imagesByColor[product.colors[0]]?.length > 0
+    ? product.imagesByColor[product.colors[0]]
+    : product.images;
+%>
+
 <div id="carousel-<%- product.pk %>" class="
     relative
     aspect-square
@@ -11,7 +26,8 @@
   ">
 
   <!-- Main Image -->
-  <img id="carouselImage-<%- product.pk %>" class="
+  <img id="carouselImage-<%- product.pk %>"
+    class="
       h-full
       w-full
       object-cover
@@ -19,8 +35,10 @@
       duration-300
       hover:scale-[1.02]
       select-none
-    " draggable="false"
-    src="<%- Array.isArray(product.colors) && product.colors.length > 0 && product.imagesByColor[product.colors[0]].length > 0 ? product.imagesByColor[product.colors[0]][0] : product.images[0] %>"
+    "
+    draggable="false"
+    src="<%- productThumbUrl(initialImages[0]) %>"
+    data-full-src="<%- initialImages[0] %>"
     alt="Product image">
 
   <!-- Prev -->
@@ -38,6 +56,7 @@
       backdrop-blur
       transition
       hover:scale-110
+      cursor-pointer
     ">
     ‹
   </button>
@@ -57,6 +76,7 @@
       backdrop-blur
       transition
       hover:scale-110
+      cursor-pointer
     ">
     ›
   </button>
@@ -65,12 +85,6 @@
 
 <!-- Thumbnails -->
 <div id="carouselThumbs-<%- product.pk %>" class="mt-4 flex flex-wrap gap-3 p-1 pb-2 overflow-x-auto">
-  <% const initialImages=Array.isArray(product.colors) && product.colors.length> 0 &&
-    product.imagesByColor[product.colors[0]]?.length > 0
-    ? product.imagesByColor[product.colors[0]]
-    : product.images;
-  %>
-
   <% initialImages.forEach((image, index)=> { %>
     <button onclick="selectSlide('<%- product.pk %>', <%- index %>)" class="
       carouselThumb-<%- product.pk %>
@@ -83,11 +97,33 @@
       <% if (index === 0) { %>
         border-blue-500 shadow-md
       <% } else { %>
-        border-transparent hover:border-gray-300
+        border-transparent hover:border-gray-300 cursor-pointer
       <% } %>
     ">
-      <img src="<%- image %>" class="h-18 w-18 object-cover" alt="Thumbnail">
+      <img src="<%- productThumbUrl(image) %>" class="h-18 w-18 object-cover" alt="Thumbnail">
     </button>
 
   <% }) %>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const pk = '<%- product.pk %>';
+
+  const imgEl = document.getElementById(`carouselImage-${pk}`);
+  const fullSrc = imgEl.dataset.fullSrc;
+
+  const preload = new Image();
+  preload.src = fullSrc;
+  preload.onload = () => {
+    loadedImages.add(fullSrc);
+    imgEl.src = fullSrc;
+  };
+
+  window.addEventListener('load', () => {
+    for (const image of getProductVariantImages(pk)) {
+      preloadImage(image);
+    }
+  });
+});
+</script>

@@ -21,6 +21,20 @@ Open: http://localhost:3000
 
 ---
 
+## 🚀 Quick Start (5 minutes)
+
+```sh
+git clone git@github.com:shopbrick/shopbrick.git my-shop
+cd my-shop
+npm install
+npm run init
+npm run dev
+```
+
+Open: http://localhost:3000
+
+---
+
 ## 🚀 Features
 
 * 🛠️ Static site generation — deploy to GitHub Pages, Netlify, or any static host
@@ -171,8 +185,8 @@ CONFIG=theme/orange.yml ENV=test npm run dev
 ├── /<product-handle>
 │   ├── info.yml
 │   ├── description.txt
-│   ├── /images/main
-│   └── /images/description
+│   ├── /images/
+│   └── /images/description/
 ```
 
 ---
@@ -180,7 +194,7 @@ CONFIG=theme/orange.yml ENV=test npm run dev
 ## ➕ Add a Product
 
 ```sh
-node scripts/add_product.js foldable-cat-hammock
+npm run add-product foldable-cat-hammock
 ```
 
 ---

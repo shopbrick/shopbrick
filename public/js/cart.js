@@ -5,6 +5,7 @@ const PAYPAL_NOT_SUPPORTED_CURRENCIES = ['BGN', 'UAH', 'AED'];
 let cart;
 let country;
 const imageIndex = {};
+const loadedImages = new Set();
 
 function loadCart() {
   const savedCart = JSON.parse(localStorage.getItem('cart') || '{}');
@@ -42,9 +43,8 @@ function displayCartSize() {
 }
 
 function getProductVariant(pk) {
-  const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
-  const size = document.querySelector(`.productSize-${pk}.active`)?.getAttribute('data-value');
-  // const size = products[pk].size;
+  const color = products[pk].color;
+  const size = products[pk].size;
   return [pk, color, size].filter(Boolean).map((v) => v.toLowerCase()).join('-').replaceAll(' ', '_');
 }
 
@@ -82,6 +82,7 @@ function validateAndSetProductQuntity(pk) {
 }
 
 function selectColor(currentElement, pk) {
+  products[pk].color = currentElement.dataset.value;
   const productColors = document.getElementsByClassName(`productColor-${pk}`);
   for (const element of productColors) {
     element.classList.remove(...ACTIVE_COLOR_CLASSES);
@@ -101,14 +102,13 @@ function selectColorLabel(pk, color) {
 }
 
 function selectSize(currentElement, pk) {
+  products[pk].size = currentElement.dataset.value;
   const productSizes = document.getElementsByClassName(`productSize-${pk}`);
   for (const element of productSizes) {
     element.classList.remove('active');
   }
   currentElement.classList.add('active');
   if (products[pk].isSizeBasedPrice) {
-    products[pk].size = currentElement.dataset.value;
-    // updateAllProductsPrices();
     updateProductPrice(pk);
   }
 }
@@ -117,10 +117,9 @@ function addProductToCart(pk) {
   const pvk = getProductVariant(pk);
   const qty = getProductQty(pk);
   const productName = products[pk].title;
-  const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
+  const color = products[pk].color;
   const productImg = products[pk].imagesByColor[color]?.[0] || products[pk].images[0];
-  const size = document.querySelector(`.productSize-${pk}.active`)?.getAttribute('data-value');
-  // const size = products[pk].size;
+  const size = products[pk].size;
   const price = products[pk].isSizeBasedPrice ? products[pk].price[size] : products[pk].price;
   const stripePrices = products[pk].stripePrices[pvk];
   const productVariantName = [productName, color, size].filter(Boolean).join(' / ');
@@ -353,13 +352,13 @@ async function selectCurrency(curr) {
 function updateAllProductsPrices() {
   const priceElems = document.getElementsByClassName('productPrice');
   for (const priceElem of priceElems) {
-    const pk = priceElem.getAttribute('data-pk');
+    const pk = priceElem.dataset.pk;
     priceElem.textContent = formatCurrency(getProductPrice(pk));
   }
 
   const oldPriceElems = document.getElementsByClassName('productOldPrice');
   for (const oldPriceElem of oldPriceElems) {
-    const pk = oldPriceElem.getAttribute('data-pk');
+    const pk = oldPriceElem.dataset.pk;
     oldPriceElem.textContent = formatCurrency(getProductCompareAtPrice(pk));
   }
 }
@@ -487,16 +486,45 @@ function urgencyMessage() {
 }
 
 function getProductVariantImages(pk) {
-  const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
+  const color = products[pk].color;
   const colorImages = products[pk].imagesByColor[color];
   return colorImages && colorImages.length > 0 ? colorImages : products[pk].images;
+}
+
+function thumbUrl(imgUrl, pk) {
+  return imgUrl
+    .replace(`/img/products/${pk}/`, `/img/products/${pk}/thumb/`)
+    .replace(/\.(jpg|jpeg|png)$/i, '.webp');
+}
+
+function preloadImage(fullSrc) {
+  if (!loadedImages.has(fullSrc)) {
+    const preloader = new Image();
+    preloader.src = fullSrc;
+    preloader.onload = () => {
+      loadedImages.add(fullSrc);
+    };
+  }
+}
+
+function preloadedSrc(imgEl, fullSrc, pk) {
+  if (loadedImages.has(fullSrc)) {
+    return fullSrc;
+  }
+  const preloader = new Image();
+  preloader.src = fullSrc;
+  preloader.onload = () => {
+    loadedImages.add(fullSrc);
+    imgEl.src = fullSrc;
+  };
+  return thumbUrl(fullSrc, pk);
 }
 
 function renderImage(pk) {
   const images = getProductVariantImages(pk);
   const imgEl = document.getElementById(`carouselImage-${pk}`);
 
-  imgEl.src = images[imageIndex[pk] ?? 0];
+  imgEl.src = preloadedSrc(imgEl, images[imageIndex[pk] ?? 0], pk);
   updateActiveThumbnail(pk);
 }
 
@@ -557,18 +585,22 @@ function renderThumbnails(pk) {
           hover:scale-105
           ${index === 0
         ? 'border-blue-500'
-        : 'border-transparent'
+        : 'border-transparent cursor-pointer'
       }
         "
       >
         <img
-          src="${image}"
+          src="${thumbUrl(image, pk)}"
           class="h-18 w-18 object-cover"
           alt="Thumbnail"
         >
       </button>
     `)
     .join('');
+
+  for (const image of images) {
+    preloadImage(image);
+  }
 }
 
 function initCarouselSwipe(pk) {
@@ -626,8 +658,8 @@ function renderProductPayPalButton(pk) {
   paypal.Buttons({
     createOrder: function (data, actions) {
       const productName = products[pk].title;
-      const color = document.querySelector(`.productColor-${pk}.active`)?.getAttribute('data-value');
-      const size = document.querySelector(`.productSize-${pk}.active`)?.getAttribute('data-value');
+      const color = products[pk].color;
+      const size = products[pk].size;
       const productVariantName = [productName, color, size].filter(Boolean).join(' / ');
       const itemQty = getProductQty(pk);
       let productPrice = getProductPrice(pk);

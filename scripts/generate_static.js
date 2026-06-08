@@ -4,7 +4,8 @@ import fs from 'fs';
 import fsExtra from 'fs-extra';
 import ejs from 'ejs';
 import config, {env} from '../src/config.js';
-import {getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct, getProductsObject} from '../src/products.js';
+import {productsDir, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct, getProductsObject} from '../src/products.js';
+import {generateProductThumbs} from '../src/images.js';
 import {getBlogs} from '../src/blogs.js';
 import {copyDirSync, copyProductImages, minifyHTML, uglifyJSfile} from '../src/utils2.js';
 import countries from '../src/countries.js';
@@ -14,16 +15,17 @@ import currencies from '../src/currencies.js';
 // Usage:
 //     node scripts/generate_static.js
 //
-const app = express();
+// const app = express();
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(process.cwd(), 'views'));
+// app.set('view engine', 'ejs');
+// app.set('views', path.join(process.cwd(), 'views'));
 
 const products = getProductsWithStripePrices();
 const productsObj = getProductsObject();
 const featuredProducts = products.filter((p) => p.featuring_product);
 const policies = ['privacy-policy', 'refund-policy', 'shipping-policy', 'terms-of-service'];
 const blogs = getBlogs();
+await generateProductThumbs(productsDir);
 
 const locals = {
   env,
@@ -75,7 +77,8 @@ async function generateStaticSite() {
   console.log(`📂 Created dir ./${buildFolder}/products/`);
 
   for (const product of products) {
-    copyProductImages(buildFolder, product.pk, 'main');
+    copyProductImages(buildFolder, product.pk);
+    copyProductImages(buildFolder, product.pk, 'thumb');
     copyProductImages(buildFolder, product.pk, 'description');
 
     const filePath = path.join(productsDir, `${product.pk}.html`);

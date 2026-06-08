@@ -25,7 +25,7 @@ export function copyDirSync(src, dest) {
 const productsDir = path.join(process.cwd(), 'products');
 const imageExtensions = /\.(png|jpe?g|webp|gif|bmp|svg)$/i;
 
-export function copyProductImages(buildFolder, pk, folder) {
+export function copyProductImages(buildFolder, pk, folder = '') {
   const buildDir = path.join(process.cwd(), buildFolder);
   const srcDir = path.join(productsDir, pk, 'images', folder);
   const destDir = path.join(buildDir, 'img', 'products', pk, folder);

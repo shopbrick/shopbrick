@@ -25,7 +25,7 @@ export function getProduct(pk) {
   const product = yaml.load(fileContent);
   product.brandedTitle = `${company}™ ${product.title}`;
   product.name = product.branded && product.title.indexOf('™') === -1 ? `${company}™ ${product.title}` : product.title;
-  product.images = getProductImages(pk, 'main');
+  product.images = getProductImages(pk);
   product.imagesByColor = getProductImagesByColor(pk, product.colors);
   product.description = getProductDescription(pk);
   product.reviews = getProductReviews(pk);
@@ -35,12 +35,12 @@ export function getProduct(pk) {
       (product.reviews.reduce((sum, r) => sum + (r.score || 0), 0) / product.reviews.length).toFixed(1)
     );
   }
-  if (doesPriceDependOnSize(product)) {
-    product.isSizeBasedPrice = true;
+  if (product.sizes) {
     product.size = product.sizes[0];
-    // product.price = {...product.price[product.size], ...product.price};  
+    product.isSizeBasedPrice = doesPriceDependOnSize(product);
   }
   if (product.colors) {
+    product.color = product.colors[0];
     const colorHex = lowercaseKeys(product.color_hex); 
     product.colorHex = Object.fromEntries(product.colors.map(color => [color, colorHex[color.toLowerCase()] ?? config.colorHex[color.toLowerCase()]]));
   }
@@ -70,26 +70,39 @@ function imageOrderComparator(a, b) {
   return a.localeCompare(b);
 }
 
-function getProductImages(pk, folder = 'main') {
-  const imagesChildDir = path.join(productsDir, pk, 'images', folder);
+function getProductImages(pk) {
+  const imagesDir = path.join(productsDir, pk, 'images');
 
-  if (!fs.existsSync(imagesChildDir))
-    return folder === 'main' ? ['/img/noimg.webp'] : [];
+  if (!fs.existsSync(imagesDir))
+    return ['/img/noimg.webp'];
 
-  const images = fs.readdirSync(imagesChildDir)
+  const images = fs.readdirSync(imagesDir)
     .filter((filename) => imageExtensions.test(filename))
     .sort(imageOrderComparator)
-    .map((filename) => `/img/products/${pk}/${folder}/${filename}`);
+    .map((filename) => `/img/products/${pk}/${filename}`);
 
-  if (images.length === 0 && folder === 'main')
+  if (images.length === 0)
     return ['/img/noimg.webp'];
 
   return images;
 };
 
+function getProductDescriptionImages(pk) {
+  const descriptionImagesDir = path.join(productsDir, pk, 'images', 'description');
+
+  if (!fs.existsSync(descriptionImagesDir))
+    return [];
+
+  const images = fs.readdirSync(descriptionImagesDir)
+    .filter((filename) => imageExtensions.test(filename))
+    .sort(imageOrderComparator)
+    .map((filename) => `/img/products/${pk}/description/${filename}`);
+
+  return images;
+}
+
 function getProductImagesByColor(pk, colors) {
-  const folder = 'main';
-  const imagesChildDir = path.join(productsDir, pk, 'images', folder);
+  const imagesChildDir = path.join(productsDir, pk, 'images');
   const res = {};
   if (!colors ||!fs.existsSync(imagesChildDir)) return res;
 
@@ -101,7 +114,7 @@ function getProductImagesByColor(pk, colors) {
     const colorImages = allFilenames
       .filter((filename) => filename.toLowerCase().includes(colorKey))
       .sort(imageOrderComparator)
-      .map((filename) => `/img/products/${pk}/${folder}/${filename}`)
+      .map((filename) => `/img/products/${pk}/${filename}`)
 
     res[color] = colorImages;
   }
@@ -122,7 +135,7 @@ function getProductDescriptionTxt(pk) {
   if (!fs.existsSync(filePath)) return;
 
   const descriptionTxt = fs.readFileSync(filePath, 'utf8');
-  const imageSrcs = getProductImages(pk, 'description');
+  const imageSrcs = getProductDescriptionImages(pk);
   return convertDescriptionTxtToHtml(descriptionTxt, imageSrcs);
 }
 
@@ -348,6 +361,7 @@ export function serializeProduct(product, opts = {}) {
     compareAtPrice: product.compare_at_price,
     isSizeBasedPrice: product.isSizeBasedPrice,
     size: product.size,
+    color: product.color,
   };
   if (!opts.inCatalog) {
     serialized.title = product.title;

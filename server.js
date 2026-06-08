@@ -2,6 +2,7 @@ import express from 'express';
 import {join} from 'path';
 import fs from 'fs-extra';
 import {productsDir, getProductWithStripePrices, getProductsObject, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct} from './src/products.js';
+import {generateProductThumbs} from './src/images.js';
 import config from './src/config.js';
 import {getBlogs} from './src/blogs.js';
 import {indexBy} from './src/utils.js';
@@ -11,6 +12,7 @@ import currencies from './src/currencies.js';
 const app = express();
 const blogs = getBlogs();
 const blogMap = indexBy(blogs, (blog) => blog.handle);
+await generateProductThumbs(productsDir);
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -42,6 +44,17 @@ app.get('/about.html', (_req, res) => {
 app.get('/404.html', (_req, res) => {
   const products = getProductsWithStripePrices();
   res.render('404', {products});
+});
+
+app.get('/img/products/:handle/:filename', (req, res) => {
+  const {handle, filename} = req.params;
+  const filePath = join(productsDir, handle, 'images', filename);
+
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send('Page not found');
+  }
 });
 
 app.get('/img/products/:handle/:category/:filename', (req, res) => {
