@@ -8,19 +8,22 @@ import site, {env} from './config.js';
 
 const productsDir = path.join(process.cwd(), 'products');
 const envSuffix = env === 'production' ? 'live' : 'test';
+const stripeMainDir = 'stripe';
 const stripeFileName = `stripe_${envSuffix}.yml`;
 const stripeArchiveFolder = `stripe_archive_${envSuffix}`;
 
 export function getStripeProductVariants(pk) {
-  const filePath = path.join(productsDir, pk, stripeFileName);
+  const filePath = path.join(productsDir, pk, stripeMainDir, stripeFileName);
   if (!fs.existsSync(filePath)) return {};
 
   return yaml.load(fs.readFileSync(filePath, 'utf8'));
 }
 
 export function saveStripeProductVariants(pk, data) {
-  const filePath = path.join(productsDir, pk, stripeFileName);
+  const dir = path.join(productsDir, pk, stripeMainDir);
+  const filePath = path.join(dir, stripeFileName);
 
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir);
   writeYamlFile(filePath, data);
 }
 
@@ -36,14 +39,14 @@ export async function createStripePrice(stripeProductVariant, stripe, currency, 
 }
 
 export function getArchivedPrices(pk, pvk) {
-  const filePath = path.join(productsDir, pk, stripeArchiveFolder, `${pvk}.yml`);
+  const filePath = path.join(productsDir, pk, stripeMainDir, stripeArchiveFolder, `${pvk}.yml`);
   if (!fs.existsSync(filePath)) return {};
 
   return yaml.load(fs.readFileSync(filePath, 'utf8'));
 }
 
 export function saveArchivedPrices(pk, pvk, data) {
-  const dir = path.join(productsDir, pk, stripeArchiveFolder);
+  const dir = path.join(productsDir, pk, stripeMainDir, stripeArchiveFolder);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir);
   const filePath = path.join(dir, `${pvk}.yml`);
   for (const currency in data) {
