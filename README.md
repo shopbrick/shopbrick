@@ -183,10 +183,9 @@ CONFIG=theme/orange.yml ENV=test npm run dev
 ```sh
 /products
 ├── /<product-handle>
-│   ├── info.yml
-│   ├── description.txt
 │   ├── /images/
-│   └── /images/description/
+│   ├── info.yml
+│   └── description.txt
 ```
 
 ---

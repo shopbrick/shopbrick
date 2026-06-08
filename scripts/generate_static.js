@@ -1,4 +1,3 @@
-import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import fsExtra from 'fs-extra';
@@ -15,10 +14,6 @@ import currencies from '../src/currencies.js';
 // Usage:
 //     node scripts/generate_static.js
 //
-// const app = express();
-
-// app.set('view engine', 'ejs');
-// app.set('views', path.join(process.cwd(), 'views'));
 
 const products = getProductsWithStripePrices();
 const productsObj = getProductsObject();
