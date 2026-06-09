@@ -23,5 +23,5 @@ Discover the Handmade Candle
 
 /products/handmade-scented-candle.html
 
-/img/products/handmade-scented-candle/main/1.jpg
+/img/products/handmade-scented-candle/1.jpg
 /img/blog/2.jpg

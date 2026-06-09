@@ -1,7 +1,8 @@
 import fs from 'fs-extra';
 import path, { normalize } from 'path';
 import yaml from 'js-yaml';
-import {writeYamlFile, convertDescriptionTxtToHtml, lowercaseKeys, encryptValues} from './utils.js';
+import {writeYamlFile, lowercaseKeys, encryptValues} from './utils.js';
+import {convertDescriptionTxtToHtml} from './miniMarkdown.js';
 import config, {env} from './config.js';
 
 const {company, baseCurrency, supportedCurrencies} = config;
