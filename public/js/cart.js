@@ -141,6 +141,7 @@ function buyProductNow(pk) {
 
   } catch (error) {
     showError(error.message);
+    throw error;
   }
 }
 
@@ -433,6 +434,7 @@ function checkout() {
 
   } catch (error) {
     showError(error.message);
+    throw error;
   }
 }
 

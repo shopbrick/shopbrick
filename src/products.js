@@ -340,7 +340,7 @@ export function getProductWithStripePrices(pk) {
 
 function getStripePrices(pk) {
   const envSuffix = env === 'production' ? 'live' : 'test';
-  const filePath = path.join(productsDir, pk, `stripe_${envSuffix}.yml`);
+  const filePath = path.join(productsDir, pk, 'stripe', `stripe_${envSuffix}.yml`);
   if (!fs.existsSync(filePath)) return {};
 
   const stripeData = yaml.load(fs.readFileSync(filePath, 'utf8'));
