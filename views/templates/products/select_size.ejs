@@ -1,5 +1,5 @@
 <div class="mb-4">
-  <span class="font-bold text-gray-700 dark:text-gray-300">Select Size:</span>
+  <span class="font-bold text-gray-700 dark:text-gray-300"><%= t('product.select_size') %>:</span>
   <div class="flex flex-wrap items-center gap-2 mt-2">
     <button id="productSize-<%- product.pk %>-<%- product.sizes[0] %>"
       onclick="selectSize(this, '<%- product.pk %>')"

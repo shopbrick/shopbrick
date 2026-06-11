@@ -9,6 +9,8 @@ import {getBlogs} from '../src/blogs.js';
 import {copyDirSync, copyProductImages, minifyHTML, uglifyJSfile} from '../src/utils2.js';
 import countries from '../src/countries.js';
 import currencies from '../src/currencies.js';
+import {LANGUAGES, LANGS} from '../src/languages.js';
+import {getTranslatedProductTitle, getTranslatedProductDescription} from '../src/i18n.js';
 
 //
 // Usage:
@@ -21,8 +23,9 @@ const featuredProducts = products.filter((p) => p.featuring_product);
 const policies = ['privacy-policy', 'refund-policy', 'shipping-policy', 'terms-of-service'];
 const blogs = getBlogs();
 await generateProductThumbs(productsDir);
+const defaultLang = config.defaultLanguage;
 
-const locals = {
+const glabalLocals = {
   env,
   getProductPrice,
   getProductCompareAtPrice,
@@ -33,9 +36,12 @@ const locals = {
   formatCurrency: config.formatCurrency,
   countries,
   currencies,
+  languages: LANGUAGES,
   products,
   featuredProducts,
   blogs,
+  getTranslatedProductTitle,
+  getTranslatedProductDescription,
 };
 
 const pages = [
@@ -47,9 +53,22 @@ const pages = [
   {route: 'success', output: 'success.html'},
 ];
 
-async function generateStaticSite() {
+async function generateStaticSite(language) {
+  const locals = {...glabalLocals, language};
+  const isDefaultLang = language === defaultLang;
+  locals.langURLPrefix = isDefaultLang ? '' : `/${language}`;
+  locals.localizeUrl = (path, lang = language) => {
+    if (lang === defaultLang) {
+      return path;
+    }
+    return `/${lang}${path}`;
+  };
+  locals.t = (key) => {
+    return config.translations?.[language]?.[key] ?? config.translations?.[defaultLang]?.[key] ?? key;
+  };
   const publicDir = path.join(process.cwd(), 'public');
-  const buildFolder = env !== 'test' ? 'build' : 'build_test';
+  const globalBuildFolder = env !== 'test' ? 'build' : 'build_test';
+  const buildFolder = isDefaultLang ? globalBuildFolder : path.join(globalBuildFolder, language);
   const buildDir = path.join(process.cwd(), buildFolder);
   const productsDir = path.join(buildDir, 'products');
   const policiesDir = path.join(buildDir, 'policies');
@@ -57,9 +76,11 @@ async function generateStaticSite() {
   await fsExtra.ensureDir(buildDir);
   console.log(`📁 Created dir ./${buildFolder}/`);
 
-  copyDirSync(publicDir, buildDir);
-  console.log('💽 Copy public dir complete.');
-  uglifyJSfile(path.join(buildDir, 'js', 'cart.js')) && console.log(`🗜️ UglifyJS minified ./${buildFolder}/js/cart.js`);
+  if (isDefaultLang) {
+    copyDirSync(publicDir, buildDir);
+    console.log('💽 Copy public dir complete.');
+    uglifyJSfile(path.join(buildDir, 'js', 'cart.js')) && console.log(`🗜️ UglifyJS minified ./${buildFolder}/js/cart.js`);
+  }
 
   for (const page of pages) {
     const filePath = path.join(buildDir, page.output);
@@ -72,10 +93,11 @@ async function generateStaticSite() {
   console.log(`📂 Created dir ./${buildFolder}/products/`);
 
   for (const product of products) {
-    copyProductImages(buildFolder, product.pk);
-    copyProductImages(buildFolder, product.pk, 'thumb');
-    copyProductImages(buildFolder, product.pk, 'description');
-
+    if (isDefaultLang) {
+      copyProductImages(buildFolder, product.pk);
+      copyProductImages(buildFolder, product.pk, 'thumb');
+      copyProductImages(buildFolder, product.pk, 'description');
+    }
     const filePath = path.join(productsDir, `${product.pk}.html`);
     const content = await ejs.renderFile('views/product.ejs', {...locals, product, products: productsObj});
     fs.writeFileSync(filePath, await minifyHTML(content), 'utf-8');
@@ -102,14 +124,17 @@ async function generateStaticSite() {
     console.log(`🌐 Generated: ./${buildFolder}/blogs/${blog.handle}.html`);
   }
 
-  const filePath = path.join(buildDir, 'CNAME');
-  fs.writeFileSync(filePath, `${config.domain}\n`, 'utf-8');
-  console.log(`🌏 Generated: ./${buildFolder}/blogs/CNAME`);
+  if (isDefaultLang) {
+    const filePath = path.join(buildDir, 'CNAME');
+    fs.writeFileSync(filePath, `${config.domain}\n`, 'utf-8');
+    console.log(`🌏 Generated: ./${buildFolder}/CNAME`);
+  }
 
-  console.log('✅ Static site generation complete!');
+  console.log(`✅ Static site generation for language ${language} complete!`);
 }
 
-generateStaticSite().catch(console.error);
+for (const language of LANGS) {
+  generateStaticSite(language).catch(console.error);
+}
 
-// import * as _ from './generate_redirects.js';
 await import('./generate_redirects.js');

@@ -10,8 +10,8 @@
         </div>
       </div>
       <div class="w-full lg:w-[45%] px-4">
-        <a href="/products/<%- product.pk %>.html">
-          <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2"><%- product.branded ? site.company + '&trade; ' : '' %><%= product.title %></h1>
+        <a href="<%- localizeUrl('/products/' + product.pk + '.html') %>">
+          <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2"><%- product.branded ? site.company + '&trade; ' : '' %><%= getTranslatedProductTitle(product, language) %></h1>
         </a>
         <div class="mb-2">
           <% if (product.star_rating) { %>
@@ -28,7 +28,7 @@
               <span class="bg-red-700 text-white rounded-full px-3 py-0.5 ml-1">Sale</span>
             <% } %>
           </p>
-          <p class="text-sm mt-1 text-gray-500">Tax included. Free <a href="/policies/shipping-policy.html" class="underline" target="_blank">Shipping</a>.</p>
+          <p class="text-sm mt-1 text-gray-500">Tax included. Free <a href="<%- localizeUrl('/policies/shipping-policy.html') %>" class="underline" target="_blank">Shipping</a>.</p>
         </div>
         <% if (product.sizes) { %>
           <%- include('select_size') %>
@@ -40,7 +40,7 @@
           <%- include('select_color_swatches') %>
         <% } %>
         <div class="mb-4">
-          <label for="quantity-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantity:</label>
+          <label for="quantity-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><%- t('product.quantity') %>:</label>
           <div class="relative flex items-center max-w-32">
             <button type="button" onclick="decrementProduct('<%- product.pk %>')"
               class="cursor-pointer bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg px-3 h-12 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">

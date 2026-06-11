@@ -18,7 +18,9 @@ function getConfig() {
   console.log('Parsing config.yml…');
   const config = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'config.yml'), 'utf8'));
   const colorHex = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'color_hex.yml'), 'utf8'));
+  const translations = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'i18n.yml'), 'utf8'));
   config.colorHex = lowercaseKeys(colorHex);
+  config.translations = translations;
 
   if (env.CONFIG) {
     env.CONFIG.split(',').map(name => name.trim()).forEach(name => {

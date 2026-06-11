@@ -2,7 +2,7 @@
 
 <section class="container mx-auto p-6 max-w-7xl">
   <h1 class="mb-6 text-center text-4xl font-bold text-slate-900 sm:text-left sm:text-5xl dark:text-white">
-    <span class="<%- site.pageTitleColor %>">Shopping Cart</span>
+    <span class="<%- site.pageTitleColor %>"><%= t('shopping_cart.title') %></span>
   </h1>
 
   <div id="errorsSection"></div>
@@ -19,7 +19,7 @@
         Total: <span id="cartTotal"></span>
       </p>
       <button onclick="checkout()" class="bg-lime-500 text-white py-3 px-6 rounded-full font-bold hover:bg-lime-600 active:bg-lime-400 cursor-pointer">
-        Checkout
+        <%= t('shopping_cart.checkout') %>
       </button>
     </div>
   </div>

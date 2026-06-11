@@ -1,3 +1,7 @@
 <%- include('templates/header') %>
-<%- include(`templates/policies/${policy}`) %>
+<% try { %>
+  <%- include(`templates/policies/i18n/${language}/${policy}`) %>
+<% } catch  { %>
+  <%- include(`templates/policies/${policy}`) %>
+<% } %>
 <%- include('templates/footer') %>

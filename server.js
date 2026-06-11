@@ -6,8 +6,10 @@ import {generateProductThumbs} from './src/images.js';
 import config from './src/config.js';
 import {getBlogs} from './src/blogs.js';
 import {indexBy} from './src/utils.js';
-import countries from './src/countries.js';
-import currencies from './src/currencies.js';
+import COUNTRIES from './src/countries.js';
+import CURRENCIES from './src/currencies.js';
+import {LANGUAGES, LANGS} from './src/languages.js';
+import {getTranslatedProductTitle, getTranslatedProductDescription} from './src/i18n.js';
 
 const app = express();
 const blogs = getBlogs();
@@ -26,8 +28,35 @@ app.use((_req, res, next) => {
   res.locals.hasBlogs = blogs.length > 0;
   res.locals.hasTestimonials = Array.isArray(config.testimonials) && config.testimonials.length > 0;
   res.locals.formatCurrency = config.formatCurrency;
-  res.locals.countries = countries;
-  res.locals.currencies = currencies;
+  res.locals.countries = COUNTRIES;
+  res.locals.currencies = CURRENCIES;
+  res.locals.languages = LANGUAGES;
+  res.locals.getTranslatedProductTitle = getTranslatedProductTitle;
+  res.locals.getTranslatedProductDescription = getTranslatedProductDescription;
+  next();
+});
+
+app.use((req, res, next) => {
+  const segments = req.path.split('/').filter(Boolean);
+  let language = config.defaultLanguage;
+
+  if (segments.length > 0 && LANGS.includes(segments[0])) {
+    language = segments[0];
+    req.url = req.url.replace(`/${language}`, '') || '/';
+  }
+  res.locals.language = language;
+  const isDefaultLang = language === config.defaultLanguage;
+  res.locals.langURLPrefix = isDefaultLang ? '' : `/${language}`;
+
+  res.locals.localizeUrl = (path, lang = language) => {
+    if (lang === config.defaultLanguage) {
+      return path;
+    }
+    return `/${lang}${path}`;
+  };
+  res.locals.t = (key) => {
+    return config.translations?.[language]?.[key] ?? config.translations?.[config.defaultLanguage]?.[key] ?? key;
+  };
   next();
 });
 

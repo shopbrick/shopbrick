@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import path, { normalize } from 'path';
+import path, {normalize} from 'path';
 import yaml from 'js-yaml';
 import {writeYamlFile, lowercaseKeys, encryptValues} from './utils.js';
 import {convertDescriptionTxtToHtml} from './miniMarkdown.js';
@@ -24,7 +24,6 @@ export function getProduct(pk) {
 
   const fileContent = fs.readFileSync(filePath, 'utf8');
   const product = yaml.load(fileContent);
-  product.brandedTitle = `${company}™ ${product.title}`;
   product.name = product.branded && product.title.indexOf('™') === -1 ? `${company}™ ${product.title}` : product.title;
   product.images = getProductImages(pk);
   product.imagesByColor = getProductImagesByColor(pk, product.colors);
@@ -88,7 +87,7 @@ function getProductImages(pk) {
   return images;
 };
 
-function getProductDescriptionImages(pk) {
+export function getProductDescriptionImages(pk) {
   const descriptionImagesDir = path.join(productsDir, pk, 'images', 'description');
 
   if (!fs.existsSync(descriptionImagesDir))

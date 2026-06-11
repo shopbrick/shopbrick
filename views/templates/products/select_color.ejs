@@ -1,5 +1,5 @@
 <div class="mb-4">
-  <span class="font-bold text-gray-700 dark:text-gray-300">Select Color:</span>
+  <span class="font-bold text-gray-700 dark:text-gray-300"><%= t('product.select_color') %>:</span>
   <div class="flex flex-wrap items-center gap-2 mt-2">
     <button id="productColor-<%- product.pk %>-<%- product.colors[0] %>"
       onclick="selectColor(this, '<%- product.pk %>')"

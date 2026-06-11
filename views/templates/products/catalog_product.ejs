@@ -1,5 +1,5 @@
 <div class="bg-white rounded-2xl cursor-pointer hover:-translate-y-2 transition-all relative">
-  <a href="/products/<%= product.pk %>.html">
+  <a href="<%- localizeUrl('/products/' + product.pk + '.html') %>">
     <% if (product.out_of_stock) { %>
       <%- include('out_of_stock_badge') %>
     <% } else if (product.sale) { %>
@@ -10,7 +10,7 @@
         class="h-full w-full object-contain" />
     </div>
     <div class="px-2 pb-2 mx-auto">
-      <h3 class="font-bold text-gray-800"><%= product.title %></h3>
+      <h3 class="font-bold text-gray-800"><%= getTranslatedProductTitle(product, language) %></h3>
       <h4 class="text-gray-800 mt-4 mb-4">
         <% if (product.compare_at_price) { %>
           <span class="text-red-500 line-through mr-0.5 productOldPrice" data-pk="<%- product.pk %>">

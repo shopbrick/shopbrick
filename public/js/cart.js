@@ -1,5 +1,6 @@
 const MAX_PRODUCT_COUNT = 10;
 const ACTIVE_COLOR_CLASSES = ['active', 'ring-4', 'ring-offset-2', 'ring-zinc-400'];
+const ALL_LANGS = new Set(['en', 'de', 'fr', 'nl', 'es', 'it', 'pt', 'pl', 'uk', 'ro', 'bg', 'hr', 'cs', 'sk', 'sl', 'hu', 'el', 'tr', 'da', 'sv', 'fi', 'et', 'lv', 'lt', 'lb', 'mt', 'ga']);
 const PAYPAL_ZERO_DECIMAL_CURRENCIES = ['HUF', 'JPY', 'KRW'];
 const PAYPAL_NOT_SUPPORTED_CURRENCIES = ['BGN', 'UAH', 'AED'];
 let cart;
@@ -294,7 +295,7 @@ const countryLocale = {
   IT: 'it-IT', JP: 'ja-JP', LV: 'lv-LV', LT: 'lt-LT', LU: 'lb-LU', MY: 'ms-MY',
   MT: 'mt-MT', NL: 'nl-NL', NZ: 'en-NZ', NO: 'no-NO', PL: 'pl-PL', PT: 'pt-PT',
   RO: 'ro-RO', SG: 'en-SG', SK: 'sk-SK', SI: 'sl-SI', KR: 'ko-KR', ES: 'es-ES',
-  SE: 'sv-SE', CH: 'de-CH', AE: 'ar-AE', GB: 'en-GB', US: 'en-US'
+  SE: 'sv-SE', CH: 'de-CH', AE: 'ar-AE', GB: 'en-GB', US: 'en-US', UA: 'uk-UA'
 };
 
 const countryCurrency = {
@@ -303,7 +304,7 @@ const countryCurrency = {
   HK: 'HKD', HU: 'HUF', IE: 'EUR', IL: 'ILS', IT: 'EUR', JP: 'JPY', LV: 'EUR',
   LT: 'EUR', LU: 'EUR', MY: 'MYR', MT: 'EUR', NL: 'EUR', NZ: 'NZD', NO: 'NOK',
   PL: 'PLN', PT: 'EUR', RO: 'RON', SG: 'SGD', SK: 'EUR', SI: 'EUR', KR: 'KRW',
-  ES: 'EUR', SE: 'SEK', CH: 'CHF', AE: 'AED', GB: 'GBP', US: 'USD'
+  ES: 'EUR', SE: 'SEK', CH: 'CHF', AE: 'AED', GB: 'GBP', US: 'USD', UA: 'UAH'
 };
 
 function selectCountry(code) {
@@ -318,9 +319,27 @@ function selectCountry(code) {
   updateAllProductsPrices();
 }
 
+function selectLanguage(lang) {
+  const {pathname, search, hash} = window.location;
+
+  const segments = pathname.split('/').filter(Boolean);
+
+  // Remove existing language prefix.
+  if (segments.length > 0 && ALL_LANGS.has(segments[0])) {
+    segments.shift();
+  }
+
+  let segmentsWithLang = segments;
+  if (lang !== defaultLanguage) {
+    segmentsWithLang = [lang, ...segments];
+  }
+  const newPath = `/${segmentsWithLang.join('/')}`;
+  window.location.assign(`${newPath}${search}${hash}`);
+}
+
 const countryCodes = new Set(['AU', 'AT', 'BE', 'BG', 'CA', 'HR', 'CY', 'CZ', 'DK',
   'EE', 'FI', 'FR', 'DE', 'GR', 'HK', 'HU', 'IE', 'IL', 'IT', 'JP', 'LV', 'LT',
-  'LU', 'MY', 'MT', 'NL', 'NZ', 'NO', 'PL', 'PT', 'RO', 'SG', 'SK', 'SI', 'KR',
+  'LU', 'MY', 'MT', 'NL', 'NZ', 'NO', 'PL', 'UA', 'PT', 'RO', 'SG', 'SK', 'SI', 'KR',
   'ES', 'SE', 'CH', 'AE', 'GB', 'US']);
 
 function getCountryCode() {
@@ -426,8 +445,8 @@ function redirectToStripeCheckout(lineItems) {
   stripe.redirectToCheckout({
     lineItems,
     mode: 'payment',
-    successUrl: `${window.location.origin}/success.html?hsh=5HkxGr80yCFm&t=${Date.now() + 90000000}`,
-    cancelUrl: window.location.origin,
+    successUrl: `${window.location.origin}${langURLPrefix}/success.html?hsh=5HkxGr80yCFm&t=${Date.now() + 90000000}`,
+    cancelUrl: `${window.location.origin}${langURLPrefix}`,
     shippingAddressCollection: {allowedCountries}
   }).then(function (result) {
     if (result.error) {
@@ -694,7 +713,7 @@ function renderProductPayPalButton(pk) {
     },
     onApprove: function (data, actions) {
       return actions.order.capture().then(function (details) {
-        window.location.assign(`${window.location.origin}/success.html?hsh=5HkxGr80yCFm&poid=${details.id}&t=${Date.now() + 90000000}`);
+        window.location.assign(`${window.location.origin}${langURLPrefix}/success.html?hsh=5HkxGr80yCFm&poid=${details.id}&t=${Date.now() + 90000000}`);
       });
     }
   }).render(`#${containerId}`);

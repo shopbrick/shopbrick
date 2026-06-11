@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="w-full lg:w-[45%] px-4">
-        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2"><%- product.branded ? site.company + '&trade; ' : '' %><%= product.title %></h1>
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2"><%- product.branded ? site.company + '&trade; ' : '' %><%= getTranslatedProductTitle(product, language) %></h1>
         <div class="mb-2">
         <% if (product.star_rating) { %>
           <%- include('templates/products/star_rating_precise') %>
@@ -67,7 +67,7 @@
         <%- include('templates/products/paypal_button') %>
         <hr class="divider">
         <div class="mt-4">
-          <%- product.description %>
+          <%- getTranslatedProductDescription(product, language) %>
         </div>
         <%- include('templates/products/add_to_cart_buttons') %>
       </div>
