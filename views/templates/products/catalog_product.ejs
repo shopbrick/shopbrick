@@ -6,8 +6,10 @@
       <%- include('sale_badge') %>
     <% } %>
     <div class="w-11/12 h-52.5 overflow-hidden mx-auto aspect-w-16 aspect-h-8 mb-1">
-      <img src="<%= product.images[0] %>" alt="<%= product.title.replace(/"/g, '') %>"
-        class="h-full w-full object-contain" />
+      <img src="<%- thumbUrl(product.images[0], product.pk) %>"
+        data-full-src="<%- product.images[0] %>"
+        alt="<%= product.title.replace(/"/g, '') %>"
+        class="h-full w-full object-contain catalogImage" />
     </div>
     <div class="px-2 pb-2 mx-auto">
       <h3 class="font-bold text-gray-800"><%= getTranslatedProductTitle(product, language) %></h3>
@@ -27,3 +29,19 @@
 <% if (!product.featuring_product || !isHomePage) { %>
 <%- serializeProduct(product, {inCatalog: true}) %>
 <% } %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const imgEls = document.getElementsByClassName('catalogImage');
+
+    for (const imgEl of imgEls) {
+      const fullSrc = imgEl.dataset.fullSrc;
+
+      const preload = new Image();
+      preload.src = fullSrc;
+       preload.onload = () => {
+        imgEl.src = fullSrc;
+      };
+    }
+  });
+</script>

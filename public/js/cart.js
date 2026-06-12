@@ -573,13 +573,13 @@ function updateActiveThumbnail(pk) {
 
   for (const thumb of thumbs) {
     thumb.classList.remove('border-blue-500', 'shadow-md');
-    thumb.classList.add('border-transparent', 'hover:border-gray-300');
+    thumb.classList.add('border-transparent', 'hover:border-gray-300', 'cursor-pointer');
   }
 
   const activeThumb = thumbs[imageIndex[pk] ?? 0];
 
   if (activeThumb) {
-    activeThumb.classList.remove('border-transparent', 'hover:border-gray-300');
+    activeThumb.classList.remove('border-transparent', 'hover:border-gray-300', 'cursor-pointer');
 
     activeThumb.classList.add('border-blue-500', 'shadow-md');
   }

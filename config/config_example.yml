@@ -27,6 +27,8 @@ testimonials:
     author: David M
   - review: I appreciate that MyShop focuses on quality instead of clutter. You can tell everything is selected with intention. It makes online shopping feel special again.
     author: Jessica R
+workingDays: 'Monday–Friday'
+workingHours: '9am–5pm EST'
 defaultCountry: US
 currencyUnit: USD
 locale: en-US

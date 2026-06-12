@@ -2,7 +2,7 @@ import express from 'express';
 import {join} from 'path';
 import fs from 'fs-extra';
 import {productsDir, getProductWithStripePrices, getProductsObject, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct} from './src/products.js';
-import {generateProductThumbs} from './src/images.js';
+import {generateProductThumbs, thumbUrl} from './src/images.js';
 import config from './src/config.js';
 import {getBlogs} from './src/blogs.js';
 import {indexBy} from './src/utils.js';
@@ -24,6 +24,7 @@ app.use((_req, res, next) => {
   res.locals.getProductPrice = getProductPrice;
   res.locals.getProductCompareAtPrice = getProductCompareAtPrice;
   res.locals.serializeProduct = serializeProduct;
+  res.locals.thumbUrl = thumbUrl;
   res.locals.site = config;
   res.locals.hasBlogs = blogs.length > 0;
   res.locals.hasTestimonials = Array.isArray(config.testimonials) && config.testimonials.length > 0;

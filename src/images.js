@@ -81,3 +81,9 @@ export async function generateProductThumbs(productsDir) {
     `🖼️  Thumbnails: ${generated} generated, ${skipped} up-to-date`
   );
 }
+
+export function thumbUrl(imgUrl, pk) {
+  return imgUrl
+    .replace(`/img/products/${pk}/`, `/img/products/${pk}/thumb/`)
+    .replace(/\.(jpg|jpeg|png)$/i, '.webp');
+}

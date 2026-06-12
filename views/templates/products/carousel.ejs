@@ -1,10 +1,4 @@
 <%
-function productThumbUrl(url) {
-  return url
-    .replace(`/img/products/${product.pk}/`, `/img/products/${product.pk}/thumb/`)
-    .replace(/\.(jpg|jpeg|png)$/i, '.webp');
-}
-
 const initialImages =
   Array.isArray(product.colors) &&
   product.colors.length > 0 &&
@@ -37,7 +31,7 @@ const initialImages =
       select-none
     "
     draggable="false"
-    src="<%- productThumbUrl(initialImages[0]) %>"
+    src="<%- thumbUrl(initialImages[0], product.pk) %>"
     data-full-src="<%- initialImages[0] %>"
     alt="Product image">
 
@@ -100,7 +94,7 @@ const initialImages =
         border-transparent hover:border-gray-300 cursor-pointer
       <% } %>
     ">
-      <img src="<%- productThumbUrl(image) %>" class="h-18 w-18 object-cover" alt="Thumbnail">
+      <img src="<%- thumbUrl(image, product.pk) %>" class="h-18 w-18 object-cover" alt="Thumbnail">
     </button>
 
   <% }) %>

@@ -4,7 +4,7 @@ import fsExtra from 'fs-extra';
 import ejs from 'ejs';
 import config, {env} from '../src/config.js';
 import {productsDir, getProductsWithStripePrices, getProductPrice, getProductCompareAtPrice, serializeProduct, getProductsObject} from '../src/products.js';
-import {generateProductThumbs} from '../src/images.js';
+import {generateProductThumbs, thumbUrl} from '../src/images.js';
 import {getBlogs} from '../src/blogs.js';
 import {copyDirSync, copyProductImages, minifyHTML, uglifyJSfile} from '../src/utils2.js';
 import countries from '../src/countries.js';
@@ -30,6 +30,7 @@ const glabalLocals = {
   getProductPrice,
   getProductCompareAtPrice,
   serializeProduct,
+  thumbUrl,
   site: config,
   hasBlogs: blogs.length > 0,
   hasTestimonials: Array.isArray(config.testimonials) && config.testimonials.length > 0,
