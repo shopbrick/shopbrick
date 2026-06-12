@@ -27,12 +27,13 @@ export function saveStripeProductVariants(pk, data) {
   writeYamlFile(filePath, data);
 }
 
-export async function createStripePrice(stripeProductVariant, stripe, currency, unit_amount) {
+export async function createStripePrice(stripeProductVariant, stripe, currency, unit_amount, metadata = {}) {
   const stripePrice = await stripeRequest(() =>
     stripe.prices.create({
       currency: currency.toLowerCase(),
       unit_amount,
       product: stripeProductVariant.stripe_id,
+      metadata,
     })
   );
   stripeProductVariant.stripe_prices[currency] = {id: stripePrice.id, unit_amount};
@@ -127,6 +128,11 @@ export async function updateStripeProductPrices(pk) {
         .map((i) => `https://${site.domain}${i}`),
       statement_descriptor: site.company,
       url: `https://${site.domain}/products/${pk}.html`,
+      metadata: {
+        shopbrick_product: pk,
+        shopbrick_variant: pvk,
+        shopbrick_env: env,
+      },
     };
 
     const stripeVariant = stripeVariants[pvk];
@@ -192,7 +198,13 @@ export async function updateStripeProductPrices(pk) {
                 stripeVariant,
                 stripe,
                 currency,
-                unit_amount
+                unit_amount,
+                {
+                  shopbrick_product: pk,
+                  shopbrick_variant: pvk,
+                  shopbrick_currency: currency,
+                  shopbrick_env: env,
+                }
               );
 
               console.log(
@@ -211,7 +223,13 @@ export async function updateStripeProductPrices(pk) {
             stripeVariant,
             stripe,
             currency,
-            unit_amount
+            unit_amount,
+            {
+              shopbrick_product: pk,
+              shopbrick_variant: pvk,
+              shopbrick_currency: currency,
+              shopbrick_env: env,
+            }
           );
 
           console.log(
@@ -257,7 +275,13 @@ export async function updateStripeProductPrices(pk) {
           pvData,
           stripe,
           currency,
-          unit_amount
+          unit_amount,
+          {
+            shopbrick_product: pk,
+            shopbrick_variant: pvk,
+            shopbrick_currency: currency,
+            shopbrick_env: env,
+          }
         );
 
         console.log(

@@ -9,10 +9,10 @@
     "init": "node scripts/init.js",
     "add-product": "node scripts/add_product.js",
     "build": "node scripts/generate_static.js",
-    "get-rates": "node scripts/fetch_exchrates.js",
-    "convert-prices": "node scripts/update_prices.js",
-    "update-prices": "node scripts/update_prices.js",
-    "sync-stripe": "node scripts/upload_stripe_prices.js"
+    "rates:get": "node scripts/fetch_exchrates.js",
+    "prices:update": "node scripts/update_prices.js",
+    "stripe:sync": "node scripts/upload_stripe_prices.js",
+    "stripe:audit": "node scripts/stripe-audit.js"
   },
   "keywords": [],
   "author": "",
