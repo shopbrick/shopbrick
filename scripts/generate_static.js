@@ -52,12 +52,14 @@ const pages = [
   {route: 'cart', output: 'cart.html'},
   {route: 'blogs', output: 'blogs.html'},
   {route: 'success', output: 'success.html'},
+  {route: 'btcpay-payment-status', output: 'btcpay-payment-status.html'},
 ];
 
 async function generateStaticSite(language) {
   const locals = {...glabalLocals, language};
   const isDefaultLang = language === defaultLang;
   locals.langURLPrefix = isDefaultLang ? '' : `/${language}`;
+  locals.homepageLink = isDefaultLang ? '/' : `/${language}`;
   locals.localizeUrl = (path, lang = language) => {
     if (lang === defaultLang) {
       return path;

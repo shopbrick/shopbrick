@@ -7,13 +7,16 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
         </svg>
       </div>
-      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">Thank you for your order!</h1>
+      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+        <%= t('status.thank_you_for_your_order') %>
+      </h1>
       <p class="text-gray-600 dark:text-gray-300 mb-4">
-        Your payment was successful. We’re processing your order and will send you a confirmation email shortly.
+        <%= t('success.your_payment_was_successful') %>
       </p>
       <p id="orderID" class="text-2xl font-semibold text-gray-600 dark:text-gray-300 mb-4"></p>
-      <a href="/" class="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">Return to
-        homepage</a>
+      <a href="<%- homepageLink %>" class="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">
+        <%= t('status.return_to_homepage') %>
+      </a>
     </div>
   </div>
 </div>
@@ -27,11 +30,15 @@
             d="M12 9v2m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
         </svg>
       </div>
-      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">Page is outdated</h1>
+      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+        <%= t('success.page_is_outdated') %>
+      </h1>
       <p class="text-gray-600 dark:text-gray-300 mb-4">
-        We couldn't find a valid order reference. Please check your link or return to the homepage.
+        <%= t('success.couldnt_find_valid_order_reference') %>
       </p>
-      <a href="/" class="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">Go to homepage</a>
+      <a href="<%- homepageLink %>" class="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">
+        <%= t('success.go_to_homepage') %>
+      </a>
     </div>
   </div>
 </div>

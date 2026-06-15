@@ -50,6 +50,7 @@ app.use((req, res, next) => {
   const langURLPrefix = isDefaultLang ? '' : `/${language}`;
   res.locals.langURLPrefix = langURLPrefix;
   config.domainWithLang = `${config.domain}${langURLPrefix}`;
+  res.locals.homepageLink = isDefaultLang ? '/' : `/${language}`;
 
   res.locals.localizeUrl = (path, lang = language) => {
     if (lang === config.defaultLanguage) {
@@ -135,6 +136,10 @@ app.get('/blogs/:handle.html', (req, res) => {
 
 app.get('/success.html', (_req, res) => {
   res.render('success');
+});
+
+app.get('/btcpay-payment-status.html', (_req, res) => {
+  res.render('btcpay-payment-status');
 });
 
 const PORT = process.env.PORT || 3000;

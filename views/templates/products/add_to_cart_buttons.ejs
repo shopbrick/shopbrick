@@ -16,4 +16,13 @@
     <button onclick="buyProductNow('<%- product.pk %>')"
       class="w-full <%- site.secondBtnColor %> text-gray-50 dark:text-white py-3 px-4 rounded-full font-bold cursor-pointer"><%= t('product.buy_now') %></button>
   </div>
+
+  <% if (site.btcPayWorkerUrl) { %>
+    <div class="w-full -mx-2 mb-4 px-2 pt-4">
+      <button onclick="btcPayBuyProduct('<%- product.pk %>')"
+        class="w-full bg-[#F7931A] hover:opacity-90 text-white py-3 px-4 rounded-full font-bold transition cursor-pointer">
+        ₿ <%= t('payment.pay_with_bitcoin') %>
+      </button>
+    </div>
+  <% } %>
 <% } %>

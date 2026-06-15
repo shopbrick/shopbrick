@@ -1,0 +1,157 @@
+<%- include('templates/header') %>
+
+<div id="paymentLoading" class="flex items-center justify-center bg-gray-50 dark:bg-black p-18">
+  <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+      <%= t('status.checking_payment_status') %>
+    </h1>
+  </div>
+</div>
+
+<div id="paymentSuccess" class="hidden bg-gray-50 dark:bg-black p-18">
+  <div class="flex items-center justify-center">
+    <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+      <div class="text-green-500 mb-4">
+        <svg class="mx-auto h-16 w-16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+        </svg>
+      </div>
+      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+        <%= t('status.payment_received') %>
+      </h1>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">
+        <%= t('status.thank_you_for_your_order') %>
+      </p>
+      <p id="invoiceId" class="text-sm text-gray-600 dark:text-gray-300 mb-4">
+      </p>
+      <a href="<%- homepageLink %>" class="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">
+        <%= t('status.return_to_homepage') %>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="paymentFailed" class="hidden bg-gray-50 dark:bg-black p-18">
+  <div class="flex items-center justify-center">
+    <div class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+      <div class="text-yellow-500 mb-4">
+        <svg class="mx-auto h-16 w-16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v2m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+        </svg>
+      </div>
+      <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+        <%= t('status.payment_not_completed') %>
+      </h1>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">
+        <%= t('status.invoice_not_paid_or_expired') %>
+      </p>
+      <a href="<%- homepageLink %>" class="inline-block mt-4 text-sm text-blue-600 dark:text-blue-400 hover:underline">
+        <%= t('status.return_to_homepage') %>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  (async () => {
+    const params = new URLSearchParams(window.location.search);
+
+    const invoiceId = params.get('invoiceId') ?? sessionStorage.getItem('btcpayInvoiceId');
+
+    if (!invoiceId) {
+      showFailed();
+      return;
+    }
+
+    try {
+      const response =
+        await fetch(
+          `${btcPayWorkerUrl}/invoice/${invoiceId}`
+        );
+
+      const invoice =
+        await response.json();
+
+      if (
+        invoice.status === 'Settled'
+      ) {
+        localStorage.setItem(
+          'cart',
+          '{}'
+        );
+
+        const cartSizeEls =
+          document.getElementsByClassName(
+            'cartSize'
+          );
+
+        for (
+          const el of cartSizeEls
+        ) {
+          el.classList.remove(
+            'visible'
+          );
+
+          el.classList.add(
+            'invisible'
+          );
+        }
+
+        document.getElementById(
+          'invoiceId'
+        ).textContent =
+          `Invoice ID: ${invoiceId}`;
+
+        showSuccess();
+
+        return;
+      }
+
+      showFailed();
+
+    } catch (error) {
+      console.error(error);
+
+      showFailed();
+    }
+
+    function showSuccess() {
+      document
+        .getElementById(
+          'paymentLoading'
+        )
+        .classList.add(
+          'hidden'
+        );
+
+      document
+        .getElementById(
+          'paymentSuccess'
+        )
+        .classList.remove(
+          'hidden'
+        );
+    }
+
+    function showFailed() {
+      document
+        .getElementById(
+          'paymentLoading'
+        )
+        .classList.add(
+          'hidden'
+        );
+
+      document
+        .getElementById(
+          'paymentFailed'
+        )
+        .classList.remove(
+          'hidden'
+        );
+    }
+  })();
+</script>
+
+<%- include('templates/footer') %>

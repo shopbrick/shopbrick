@@ -741,3 +741,59 @@ async function renderPayPalButtons() {
     renderProductPayPalButton(container.dataset.pk);
   }
 }
+
+async function btcPayBuyProduct(pk) {
+  try {
+    const pvk = getProductVariant(pk);
+    const qty = getProductQty(pk);
+    const size = products[pk].size;
+    const price = products[pk].isSizeBasedPrice ? products[pk].price[size][currency] : products[pk].price[currency];
+    const lineItems = [{pvk, qty, price, currency}];
+
+    await createBtcPayInvoiceAndRedirectToCheckout(lineItems);
+
+  } catch (error) {
+    showError(error.message);
+    throw error;
+  }
+}
+
+async function btcPayCheckoutCart() {
+  try {
+    const lineItems = [];
+    for (const pvk in cart) {
+      const {qty, price} = cart[pvk];
+      lineItems.push({pvk, qty, price: price[currency], currency});
+    }
+
+    await createBtcPayInvoiceAndRedirectToCheckout(lineItems);
+
+  } catch (error) {
+    showError(error.message);
+    throw error;
+  }
+}
+
+async function createBtcPayInvoiceAndRedirectToCheckout(lineItems) {
+  const returnUrl = `${window.location.origin}${langURLPrefix}/btcpay-payment-status.html`;
+
+  const response = await fetch(`${btcPayWorkerUrl}/invoice`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      cart: lineItems,
+      returnUrl
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      'Failed to create BTCPay invoice'
+    );
+  }
+
+  const payment = await response.json();
+
+  sessionStorage.setItem('btcpayInvoiceId', payment.invoiceId);
+  window.location.href = payment.checkoutUrl;
+}

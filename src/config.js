@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import yaml from 'js-yaml';
-import {lowercaseKeys} from './utils.js';
+import {lowercaseKeys, deepMerge} from './utils.js';
 
 const defaultEncryptionKey = 'v8aNKRf7NaTT';
 
@@ -18,9 +18,8 @@ function getConfig() {
   console.log('Parsing config.yml…');
   const config = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'config.yml'), 'utf8'));
   const colorHex = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'color_hex.yml'), 'utf8'));
-  const translations = yaml.load(fs.readFileSync(path.join(process.cwd(), 'config', 'i18n.yml'), 'utf8'));
   config.colorHex = lowercaseKeys(colorHex);
-  config.translations = translations;
+  config.translations = loadConfigDir(path.join(process.cwd(), 'config', 'i18n'));
 
   if (env.CONFIG) {
     env.CONFIG.split(',').map(name => name.trim()).forEach(name => {
@@ -53,6 +52,21 @@ function loadAndMergeYaml(config, filename, options = {}) {
   console.log(`Parsing ${filename}.yml…`);
   const loaded = yaml.load(fs.readFileSync(filePath, 'utf8'));
   Object.assign(config, loaded);
+}
+
+function loadConfigDir(dirPath) {
+  const files = fs.readdirSync(dirPath);
+  const result = {};
+  for (const file of files) {
+    if (!file.endsWith('.yml') && !file.endsWith('.yaml')) continue;
+
+    const filePath = path.join(dirPath, file);
+    const content = fs.readFileSync(filePath, 'utf8');
+    const parsed = yaml.load(content);
+
+    deepMerge(result, parsed);
+  }
+  return result;
 }
 
 export default getConfig();
