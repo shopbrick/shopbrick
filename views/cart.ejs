@@ -23,10 +23,12 @@
       <button onclick="checkout()" class="bg-lime-500 text-white py-3 px-6 rounded-full font-bold hover:bg-lime-600 active:bg-lime-400 cursor-pointer">
         <%= t('shopping_cart.checkout') %>
       </button>
-      <button onclick="btcPayCheckoutCart()"
-        class="bg-[#F7931A] text-white py-3 px-6 rounded-full font-bold hover:bg-orange-400 active:bg-orange-300 cursor-pointer">
-        ₿ <%= t('payment.pay_with_bitcoin') %>
-      </button>
+      <% if (site.btcPayWorkerUrl) { %>
+        <button onclick="btcPayCheckoutCart()"
+          class="bg-[#F7931A] text-white py-3 px-6 rounded-full font-bold hover:bg-orange-400 active:bg-orange-300 cursor-pointer">
+          ₿ <%= t('payment.pay_with_bitcoin') %>
+        </button>
+      <% } %>
     </div>
   </div>
 </section>
