@@ -21,20 +21,6 @@ Open: http://localhost:3000
 
 ---
 
-## 🚀 Quick Start (5 minutes)
-
-```sh
-git clone git@github.com:shopbrick/shopbrick.git my-shop
-cd my-shop
-npm install
-npm run init
-npm run dev
-```
-
-Open: http://localhost:3000
-
----
-
 ## 🚀 Features
 
 * 🛠️ Static site generation — deploy to GitHub Pages, Netlify, or any static host
