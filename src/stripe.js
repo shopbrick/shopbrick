@@ -190,7 +190,7 @@ export async function updateStripeProductPrices(pk) {
                 matchedArchivedPrice;
 
               console.log(
-                `  ♻️ ${currency}: reused archived price → ${formatPrice(price)}`
+                `  ♻️  ${currency}: reused archived price → ${formatPrice(price)}`
               );
 
             } else {
