@@ -1,4 +1,4 @@
-# ShopBrick 🧱🛒
+# ShopBrick 🧱🛒 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 **ShopBrick** is a static e-commerce framework — deploy anywhere with zero backend infrastructure.
 Receive your orders directly via **Stripe** or **PayPal**, and manage everything locally with version-controlled product data.
