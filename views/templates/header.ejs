@@ -43,9 +43,9 @@
             <a href="<%- localizeUrl('/blogs.html') %>" class="hover:opacity-90"><%= t('nav.blogs') %></a>
           <% } %>
             <%- include('light_dark_mode_theme_toggle_button') %>
-            <%- include('country_select') %>
-            <%- include('currency_select') %>
-            <%- include('language_select') %>
+            <%- include('country_select', {selectClass: 'max-w-45'}) %>
+            <%- include('currency_select', {selectClass: 'max-w-45'}) %>
+            <%- include('language_select', {selectClass: 'max-w-45'}) %>
             <a href="<%- localizeUrl('/cart.html') %>" class="relative hover:opacity-90">
               &#128717;
               <span class="cartSize absolute -bottom-2 -left-2 bg-white text-black text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-300 shadow-md invisible" />
@@ -60,9 +60,9 @@
         <% if (hasBlogs) { %>
           <a href="<%- localizeUrl('/blogs.html') %>"><%= t('nav.blogs') %></a>
         <% } %>
-          <%- include('country_select') %>
-          <%- include('currency_select') %>
-          <%- include('language_select') %>
+          <%- include('country_select', {selectClass: 'w-full max-w-xs'}) %>
+          <%- include('currency_select', {selectClass: 'w-full max-w-xs'}) %>
+          <%- include('language_select', {selectClass: 'w-full max-w-xs'}) %>
           <a href="<%- localizeUrl('/cart.html') %>" class="relative py-6">
             &#128717; <%= t('nav.cart') %>
             <span class="cartSize absolute -bottom-2 -left-2 bg-white text-black text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-300 shadow-md invisible" />

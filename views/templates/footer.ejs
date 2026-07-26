@@ -37,9 +37,9 @@
             year.setAttribute('datetime', thisYear);
             year.textContent = thisYear;
           </script>
-          <%- include('country_select') %>
-          <%- include('currency_select') %>
-          <%- include('language_select') %>
+          <%- include('country_select', {selectClass: 'max-w-45'}) %>
+          <%- include('currency_select', {selectClass: 'max-w-45'}) %>
+          <%- include('language_select', {selectClass: 'max-w-45'}) %>
           <%- include('light_dark_mode_theme_toggle_button') %>
           <%- include('light_dark_mode_theme_toggle_script') %>
         </div>

@@ -1,4 +1,4 @@
-<select class="max-w-45" onchange="selectLanguage(this.value)">
+<select class="<%= selectClass || '' %>" onchange="selectLanguage(this.value)">
   <% languages.forEach(({lang, label})=> { %>
     <option value="<%- lang %>"<%- lang===language ? ' selected' : '' %>><%- label %></option>
   <% }) %>

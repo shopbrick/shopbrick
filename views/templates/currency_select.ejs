@@ -1,4 +1,4 @@
-<select class="currencySelect max-w-45" onchange="selectCurrency(this.value)">
+<select class="currencySelect <%= selectClass || '' %>" onchange="selectCurrency(this.value)">
   <% currencies.forEach(({currency, symbol}) => { %>
     <option value="<%- currency %>" <%- currency === site.baseCurrency ? ' selected' : '' %>><%- currency %> <%- symbol %></option>
   <% }) %>
