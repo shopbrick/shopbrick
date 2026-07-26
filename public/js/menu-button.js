@@ -9,7 +9,12 @@ const initMenu = () => {
   };
 
   weightPlatesBtn.addEventListener('click', toggleMenu);
-  mobileMenu.addEventListener('click', toggleMenu);
+
+  mobileMenu.addEventListener('click', (event) => {
+    if (event.target.closest('a')) {
+      toggleMenu();
+    }
+  });
 };
 
 document.addEventListener('DOMContentLoaded', initMenu);

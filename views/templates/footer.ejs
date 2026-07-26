@@ -8,7 +8,11 @@
           E-mail:
           <a href="mailto:<%= site.email %>"><%= site.email %></a>
         </address>
-        <nav class="hidden flex-col gap-2 md:flex" aria-label="footer">
+        <nav class="flex-col gap-2 flex" aria-label="footer">
+          <a href="<%- localizeUrl('/cart.html') %>" class="relative hover:opacity-90">
+            &#128717; <%= t('nav.cart') %>
+            <span class="cartSize absolute -bottom-2 -left-2 bg-white text-black text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-300 shadow-md invisible" />
+          </a>
           <a href="<%- localizeUrl('/#products') %>" class="hover:opacity-90"><%= t('nav.shop') %></a>
         <% if (hasTestimonials) { %>
           <a href="/#testimonials" class="hover:opacity-90"><%= t('nav.testimonials') %></a>
@@ -18,7 +22,7 @@
         <% } %>
           <a href="/#contact" class="hover:opacity-90"><%= t('nav.contact') %></a>
         </nav>
-        <nav class="hidden flex-col gap-2 md:flex" aria-label="footer">
+        <nav class="flex-col gap-2 flex" aria-label="footer">
           <a href="<%- localizeUrl('/policies/privacy-policy.html') %>" class="hover:opacity-90"><%= t('nav.privacy_policy') %></a>
           <a href="<%- localizeUrl('/policies/refund-policy.html') %>" class="hover:opacity-90"><%= t('nav.refund_policy') %></a>
           <a href="<%- localizeUrl('/policies/shipping-policy.html') %>" class="hover:opacity-90"><%= t('nav.shipping_policy') %></a>
