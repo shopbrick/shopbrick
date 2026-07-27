@@ -163,18 +163,15 @@ export async function updateStripeProductPrices(pk) {
 
           if (stripePrice.unit_amount !== unit_amount) {
             archivedPrices[currency] ||= [];
-            archivedPrices[currency].push(stripePrice);
 
-            await stripeRequest(() =>
-              stripe.prices.update(
-                stripePrice.id,
-                {active: false}
-              )
-            );
+            archivedPrices[currency].push({
+              ...stripePrice,
+              inactive_after: getInactiveAfter(),
+            });
 
             const matchedArchivedPrice =
               searchArchivedPrice(
-                archivedPrices[currency] || [],
+                archivedPrices[currency],
                 unit_amount
               );
 
@@ -185,6 +182,15 @@ export async function updateStripeProductPrices(pk) {
                   {active: true}
                 )
               );
+
+              // price is no longer archived
+              delete matchedArchivedPrice.inactive_after;
+
+              // we remove it from the archive
+              archivedPrices[currency] =
+                archivedPrices[currency].filter(
+                  (p) => p.id !== matchedArchivedPrice.id
+                );
 
               stripeVariant.stripe_prices[currency] =
                 matchedArchivedPrice;
@@ -296,6 +302,13 @@ export async function updateStripeProductPrices(pk) {
   saveStripeProductVariants(pk, stripeVariants);
 }
 
+function getInactiveAfter() {
+  return new Date(
+    Date.now() +
+    site.stripeArchivePriceDelayHours * 60 * 60 * 1000
+  ).toISOString();
+}
+
 function formatPrice(price) {
   return Number(price).toFixed(2);
 }
@@ -345,4 +358,77 @@ async function stripeRequest(fn, retries = 5) {
       attempt++;
     }
   }
+}
+
+export async function inactiveOldStripePrices() {
+  const stripe = new Stripe(site.stripeApiSecretKey, {
+    maxNetworkRetries: 3,
+  });
+
+  const productDirs = fs.readdirSync(productsDir, {
+    withFileTypes: true,
+  })
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name);
+
+  console.log('');
+  console.log('🗄️  Stripe inactive-old-prices');
+  console.log('');
+
+  for (const pk of productDirs) {
+    const archiveDir = path.join(productsDir, pk, stripeMainDir, stripeArchiveFolder);
+
+    if (!fs.existsSync(archiveDir)) continue;
+
+    const files = fs.readdirSync(archiveDir);
+
+    for (const file of files) {
+      if (!file.endsWith('.yml')) continue;
+
+      const pvk = path.basename(file, '.yml');
+
+      const archivedPrices =
+        getArchivedPrices(pk, pvk);
+
+      let changed = false;
+
+      for (const currency in archivedPrices) {
+        for (const price of archivedPrices[currency]) {
+
+          if (!price.inactive_after)
+            continue;
+
+          if (
+            new Date(price.inactive_after) >
+            new Date()
+          ) {
+            continue;
+          }
+
+          console.log(
+            `  🔒 ${pk}/${pvk} ${currency}: ${price.id}`
+          );
+
+          await stripeRequest(() =>
+            stripe.prices.update(price.id, {active: false})
+          );
+
+          delete price.inactive_after;
+
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        saveArchivedPrices(
+          pk,
+          pvk,
+          archivedPrices
+        );
+      }
+    }
+  }
+
+  console.log('');
+  console.log('✅ Done');
 }

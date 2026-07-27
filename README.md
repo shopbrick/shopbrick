@@ -212,21 +212,53 @@ Add into `config/test.yml`
 ```yml
 stripeApiPublishableKey: 'pk_test_...'
 stripeApiSecretKey: 'sk_test_...'
+
+# How long old Stripe Prices remain active after a price change.
+# This prevents customers with cached pages from seeing
+# "This Price is no longer active" checkout errors.
+stripeArchivePriceDelayHours: 24
 ```
+
+Sync products and prices:
 
 ```sh
-ENV=test npm run stripe
+ENV=test npm run stripe:sync
 ```
 
-and `config/production.yml`
+Add into `config/production.yml`
 
 ```yml
 stripeApiPublishableKey: 'pk_live_...'
 stripeApiSecretKey: 'sk_live_...'
+
+# How long old Stripe Prices remain active after a price change.
+stripeArchivePriceDelayHours: 24
 ```
 
 ```sh
-ENV=prod npm run sync-stripe
+ENV=prod npm run stripe:sync
+```
+
+### Archiving old Stripe Prices
+
+When a product price changes, ShopBrick creates (or reuses) the new Stripe Price immediately, while the previous Price remains active for `stripeArchivePriceDelayHours`. This prevents checkout failures for customers who still have cached pages or open browser tabs referencing the old Price ID.
+
+Old Prices are archived automatically by running:
+
+```sh
+ENV=prod npm run stripe:inactive-old-prices
+```
+
+It is recommended to run this command daily using cron:
+
+```cron
+0 3 * * * ENV=prod /path/to/shopbrick/node_modules/.bin/npm run stripe:inactive-old-prices
+```
+
+or, if your environment variables are already configured:
+
+```cron
+0 3 * * * cd /path/to/shopbrick && npm run stripe:inactive-old-prices
 ```
 
 ---

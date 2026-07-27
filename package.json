@@ -12,6 +12,7 @@
     "rates:get": "node scripts/fetch_exchrates.js",
     "prices:update": "node scripts/update_prices.js",
     "stripe:sync": "node scripts/upload_stripe_prices.js",
+    "stripe:inactive-old-prices": "node scripts/stripe_inactive_old_prices.js",
     "stripe:audit": "node scripts/stripe-audit.js"
   },
   "keywords": [],

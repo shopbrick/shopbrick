@@ -1,4 +1,4 @@
-import cfg, {env} from '../src/config.js';
+import cfg from '../src/config.js';
 import fetchExchRates from '../src/exchrates.js';
 import {updateProductPrices, updateAllProductsPrices} from '../src/products.js';
 import {updateStripeProductPrices, updateAllStripeProductPrices} from '../src/stripe.js';

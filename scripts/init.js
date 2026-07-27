@@ -74,6 +74,7 @@ async function ensureEnvSecretsFile(filePath, env = 'test') {
     const envSecrets = {
       stripeApiPublishableKey: `pk_${env === 'test' ? 'test' : 'live'}_YOUR_PUBLISHABLE_KEY`,
       stripeApiSecretKey: `sk_${env === 'test' ? 'test' : 'live'}_YOUR_SECRET_KEY`,
+      stripeArchivePriceDelayHours: 24,
       paypalClientID: `YOUR_PAYPAL_${env === 'test' ? 'TEST' : 'PRODUCTION'}_CLIENT_ID`,
       paypalClientSecret: `YOUR_PAYPAL_${env === 'test' ? 'TEST' : 'PRODUCTION'}_CLIENT_SECRET`,
       paypalAPI: env === 'test' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com',
