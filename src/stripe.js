@@ -98,6 +98,7 @@ export async function updateAllStripeProductPrices() {
     console.log('');
   }
 
+  await inactiveOldStripePrices();
   console.log('🎉 Stripe sync completed');
 }
 
@@ -373,7 +374,6 @@ export async function inactiveOldStripePrices() {
 
   console.log('');
   console.log('🗄️  Stripe inactive-old-prices');
-  console.log('');
 
   for (const pk of productDirs) {
     const archiveDir = path.join(productsDir, pk, stripeMainDir, stripeArchiveFolder);
@@ -428,7 +428,5 @@ export async function inactiveOldStripePrices() {
       }
     }
   }
-
-  console.log('');
   console.log('✅ Done');
 }
